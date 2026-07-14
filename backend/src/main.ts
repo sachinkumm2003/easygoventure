@@ -37,7 +37,7 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix(appCfg.apiPrefix);
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
 
-  // Global validation — strip unknown props, transform payloads to DTO instances
+  // Global validation - strip unknown props, transform payloads to DTO instances
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

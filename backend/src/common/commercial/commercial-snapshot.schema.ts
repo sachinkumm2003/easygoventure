@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 /**
  * Immutable commercial pricing snapshots, shared by Quotation and Proposal.
  *
- * Once written these are NEVER modified — later edits to vendors, rates, hotels,
+ * Once written these are NEVER modified - later edits to vendors, rates, hotels,
  * services or the source package do not touch a historical quotation or a
  * converted proposal. Ids are stored as strings (frozen references, not joins).
  */

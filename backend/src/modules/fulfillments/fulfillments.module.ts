@@ -7,7 +7,7 @@ import { FulfillmentsService } from './fulfillments.service';
 import { FulfillmentsController } from './fulfillments.controller';
 
 /**
- * Fulfillments — the post-acceptance workstream (visa cases, bookings, transfers).
+ * Fulfillments - the post-acceptance workstream (visa cases, bookings, transfers).
  * Exports `FulfillmentsService` so the proposals module can open one on acceptance.
  */
 @Module({

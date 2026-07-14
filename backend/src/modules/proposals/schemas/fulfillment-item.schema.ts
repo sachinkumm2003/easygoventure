@@ -15,7 +15,7 @@ export enum FulfillmentItemStatus {
 export type FulfillmentItemDocument = HydratedDocument<FulfillmentItem>;
 
 /**
- * FulfillmentItem — one operational line derived from a proposal's commercial
+ * FulfillmentItem - one operational line derived from a proposal's commercial
  * snapshot (one per PackageItemSnapshot). The proposal's operational progress is
  * derived from the statuses of its fulfillment items.
  */

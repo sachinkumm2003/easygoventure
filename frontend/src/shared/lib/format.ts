@@ -8,7 +8,7 @@ function toDate(value: string | Date | undefined | null): Date | null {
 
 export function formatDate(value?: string | Date | null, pattern = 'dd MMM yyyy'): string {
   const date = toDate(value);
-  return date ? format(date, pattern) : '—';
+  return date ? format(date, pattern) : '-';
 }
 
 export function formatDateTime(value?: string | Date | null): string {
@@ -17,7 +17,7 @@ export function formatDateTime(value?: string | Date | null): string {
 
 export function formatRelative(value?: string | Date | null): string {
   const date = toDate(value);
-  return date ? formatDistanceToNow(date, { addSuffix: true }) : '—';
+  return date ? formatDistanceToNow(date, { addSuffix: true }) : '-';
 }
 
 /**
@@ -46,7 +46,7 @@ export function toUsd(amount: number, currency = 'USD'): number {
  * pass its code and it is converted first (AED/INR → $).
  */
 export function formatCurrency(amount?: number, currency = 'USD'): string {
-  if (amount === undefined || amount === null) return '—';
+  if (amount === undefined || amount === null) return '-';
   const usd = toUsd(amount, currency);
   try {
     return new Intl.NumberFormat('en-US', {

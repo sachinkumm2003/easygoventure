@@ -15,7 +15,7 @@ export class VendorRatesRepository extends TenantScopedRepository<VendorRateDocu
   }
 
   /**
-   * Active, non-deleted rates matching a (vendor, rateType, target) — the
+   * Active, non-deleted rates matching a (vendor, rateType, target) - the
    * candidate set the service checks for validity-window overlaps.
    */
   findActiveMatching(

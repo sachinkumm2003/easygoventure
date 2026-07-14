@@ -7,7 +7,7 @@ import { AuditLog, AuditLogSchema } from './schemas/audit-log.schema';
 
 /**
  * Audit framework. Marked @Global so any module can inject AuditService without
- * re-importing it — the audit trail is a cross-cutting concern.
+ * re-importing it - the audit trail is a cross-cutting concern.
  */
 @Global()
 @Module({

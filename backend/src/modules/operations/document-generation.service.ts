@@ -34,7 +34,7 @@ const TITLES: Record<DocumentType, string> = {
 };
 
 /**
- * DocumentGenerationService — assembles travel documents from the proposal
+ * DocumentGenerationService - assembles travel documents from the proposal
  * snapshot + traveler + booking data. The BINARY IS NEVER STORED in MongoDB; we
  * persist metadata only (provenance + a content checksum + an optional external
  * storage pointer) and return the assembled content for rendering downstream.
@@ -64,7 +64,7 @@ export class DocumentGenerationService {
 
     const content = await this.assemble(type, proposal, travelerList, bookingList, user);
     const checksum = createHash('sha256').update(JSON.stringify(content)).digest('hex');
-    const title = `${TITLES[type]} — ${proposal.title}`;
+    const title = `${TITLES[type]} - ${proposal.title}`;
 
     const record = await this.documents.create({
       organizationId: requireOrganizationId(user),

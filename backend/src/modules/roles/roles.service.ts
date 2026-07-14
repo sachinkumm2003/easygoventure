@@ -86,7 +86,7 @@ export class RolesService {
   }
 
   /**
-   * Resolve the effective authority for a set of role ids — the union of their
+   * Resolve the effective authority for a set of role ids - the union of their
    * permissions. Used by the auth layer to build `request.user.permissions`.
    */
   async resolveAuthority(roleIds: Types.ObjectId[]): Promise<ResolvedAuthority> {

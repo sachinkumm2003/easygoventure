@@ -25,12 +25,12 @@ export interface ReconcileReport {
  *
  * A user with an `organizationId` but empty `roleIds` is permanently
  * permissionless (0 permissions → 403 everywhere). This reconciles the safe,
- * unambiguous case: an organization that has **no owner at all** — its founder
+ * unambiguous case: an organization that has **no owner at all** - its founder
  * (the earliest-created roleless user) is promoted to ORGANIZATION_OWNER.
  *
  * Deliberately conservative: a roleless user in an org that ALREADY has an owner
  * is left untouched (they are a member awaiting explicit role assignment, not a
- * founder) — so this never silently over-privileges. Fully idempotent: a second
+ * founder) - so this never silently over-privileges. Fully idempotent: a second
  * run finds no ownerless orgs and repairs nothing.
  */
 export async function reconcileRolelessOwners(
@@ -42,7 +42,7 @@ export async function reconcileRolelessOwners(
     .findOne({ organizationId: null, code: SystemRole.ORGANIZATION_OWNER })
     .lean<{ _id: Types.ObjectId; permissions?: string[] }>();
   if (!ownerRole) {
-    throw new Error('ORGANIZATION_OWNER role not found — seed/bootstrap roles before reconciling');
+    throw new Error('ORGANIZATION_OWNER role not found - seed/bootstrap roles before reconciling');
   }
   const ownerRoleId = ownerRole._id;
   const permissionCount = ownerRole.permissions?.length ?? 0;
@@ -73,7 +73,7 @@ export async function reconcileRolelessOwners(
   for (const user of candidates) {
     const org = String(user.organizationId);
     if (ownedOrgIds.has(org)) {
-      skippedOwnedOrg += 1; // org already has an owner — leave this member alone
+      skippedOwnedOrg += 1; // org already has an owner - leave this member alone
       continue;
     }
     await userModel.updateOne({ _id: user._id }, { $set: { roleIds: [ownerRoleId] } });

@@ -15,7 +15,7 @@ export interface ReadinessResult {
 }
 
 /**
- * BookingReadinessService — validates that a converted proposal is ready to be
+ * BookingReadinessService - validates that a converted proposal is ready to be
  * turned into operational bookings. Pure (no I/O); operates on the frozen
  * commercial snapshot, so vendor/hotel references are validated as they were at
  * acceptance time.

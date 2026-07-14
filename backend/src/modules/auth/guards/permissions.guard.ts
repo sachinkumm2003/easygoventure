@@ -14,7 +14,7 @@ import type { AuthenticatedUser } from '../auth.types';
  * Permission-driven authorization guard.
  *
  * Runs after JwtAuthGuard (so `request.user` is populated). Routes without a
- * `@RequirePermissions()`/`@RequireAnyPermission()` annotation pass through —
+ * `@RequirePermissions()`/`@RequireAnyPermission()` annotation pass through -
  * authentication alone is sufficient for them. SUPER_ADMIN (wildcard `*`) bypasses
  * all permission checks.
  */

@@ -30,7 +30,7 @@ export class ApiKeyGuard implements CanActivate {
   ) {
     this.apiKey = config.get<string>('API_KEY') || undefined;
     if (!this.apiKey) {
-      this.logger.warn('API_KEY is not set — the API-key gate is DISABLED (development mode).');
+      this.logger.warn('API_KEY is not set - the API-key gate is DISABLED (development mode).');
     }
   }
 

@@ -10,7 +10,7 @@ export enum AiMessageRole {
 
 export type AiMessageDocument = HydratedDocument<AiMessage>;
 
-/** AiMessage — one turn of a copilot conversation (append-only history). */
+/** AiMessage - one turn of a copilot conversation (append-only history). */
 @Schema({ ...baseSchemaOptions, collection: 'ai_messages' })
 export class AiMessage {
   @Prop({ type: Types.ObjectId, ref: 'Organization', required: true, index: true })
@@ -33,5 +33,5 @@ export const AiMessageSchema = SchemaFactory.createForClass(AiMessage);
 
 AiMessageSchema.index({ sessionId: 1, createdAt: 1 });
 
-// 7-day retention to match the session TTL — messages self-purge after a week.
+// 7-day retention to match the session TTL - messages self-purge after a week.
 AiMessageSchema.index({ createdAt: 1 }, { expireAfterSeconds: 7 * 24 * 60 * 60 });

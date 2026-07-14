@@ -6,10 +6,13 @@ import type {
   Lead,
   LeadActivity,
   LeadActivityType,
+  LeadFlight,
   LeadHotelOption,
+  LeadLocation,
   LeadServiceItem,
   LeadSource,
   LeadStatus,
+  LeadTraveler,
 } from '@shared/types/domain';
 
 export interface CreateLeadInput {
@@ -21,6 +24,8 @@ export interface CreateLeadInput {
   source?: LeadSource;
   inquiryType?: InquiryType;
   status?: LeadStatus;
+  startDate?: string;
+  endDate?: string;
   notes?: string;
   rawInquiry?: string;
   // Inquiry requirements (the working brief)
@@ -44,6 +49,9 @@ export interface CreateLeadInput {
   quoteValidityHours?: number;
   // Internal tracking
   preparedBy?: string;
+  locations?: LeadLocation[];
+  flights?: LeadFlight[];
+  travelers?: LeadTraveler[];
 }
 
 export type UpdateLeadInput = Partial<CreateLeadInput>;

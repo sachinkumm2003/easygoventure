@@ -169,7 +169,7 @@ export class ProposalsService {
           tenant,
         );
         if (!accepted) {
-          // Lost the race or wrong state — abort the transaction.
+          // Lost the race or wrong state - abort the transaction.
           throw new BusinessException(
             `Cannot accept proposal while it is ${proposal.status}`,
             'INVALID_PROPOSAL_TRANSITION',

@@ -10,7 +10,7 @@ import { RevenuePipelineService } from './revenue-pipeline.service';
 import { RevenuePipelineRepository } from './revenue-pipeline.repository';
 
 /**
- * Reporting — read-only commercial roll-ups. Registers the source schemas for
+ * Reporting - read-only commercial roll-ups. Registers the source schemas for
  * direct aggregation (models are shared with their owning modules by name).
  */
 @Module({

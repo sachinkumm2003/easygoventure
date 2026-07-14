@@ -11,9 +11,9 @@ const RECOMMENDATION: Record<string, string> = {
   MISSING_PASSPORTS: 'Collect passport copies from travelers before submitting visas.',
   UNCONFIRMED_HOTELS: 'Chase supplier confirmation for pending hotel bookings.',
   UNCONFIRMED_TRANSFERS: 'Confirm transfer pickups and assign drivers/vehicles.',
-  PENDING_VISAS: 'Escalate visa applications — approvals need the most lead time.',
+  PENDING_VISAS: 'Escalate visa applications - approvals need the most lead time.',
   MISSING_BOOKING_REFERENCES: 'Add booking/supplier references to confirmed bookings.',
-  IMMINENT_TRAVEL_NOT_READY: 'Travel is within 72 hours — resolve all open items now.',
+  IMMINENT_TRAVEL_NOT_READY: 'Travel is within 72 hours - resolve all open items now.',
 };
 
 export function RiskTab({ proposalId }: { proposalId: string }) {

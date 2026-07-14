@@ -15,7 +15,7 @@ export enum VendorRateStatus {
 export type VendorRateDocument = HydratedDocument<VendorRate>;
 
 /**
- * VendorRate — a supplier's net cost for a service line over a validity window.
+ * VendorRate - a supplier's net cost for a service line over a validity window.
  * The cost source for the package builder / pricing engine. Supports validity
  * windows (seasonal pricing) and pax bands; overlapping ACTIVE windows for the
  * same (vendor, line, target) are validated in the service.

@@ -5,7 +5,7 @@ import { baseSchemaOptions } from '../../../common/database/schema-options';
 export type ServiceCategoryDocument = HydratedDocument<ServiceCategory>;
 
 /**
- * Global reference data — a service category (e.g. VISA, HOTEL, TRANSFER) shared
+ * Global reference data - a service category (e.g. VISA, HOTEL, TRANSFER) shared
  * across every organization. Not tenant-scoped and not soft-deletable.
  */
 @Schema({ ...baseSchemaOptions, collection: 'service_categories' })

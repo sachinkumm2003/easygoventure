@@ -1,7 +1,7 @@
 import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 
 /**
- * Password hashing using Node's built-in scrypt (memory-hard KDF) — no native
+ * Password hashing using Node's built-in scrypt (memory-hard KDF) - no native
  * dependency required. Stored format is self-describing so parameters can evolve:
  *
  *   scrypt$<N>$<r>$<p>$<saltBase64>$<hashBase64>

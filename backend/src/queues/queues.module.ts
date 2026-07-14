@@ -6,7 +6,7 @@ import { QUEUE_NAMES } from './queue.constants';
 
 /**
  * Wires BullMQ to the shared Redis connection and registers the application queues.
- * Processors are intentionally not registered yet — this is infrastructure only.
+ * Processors are intentionally not registered yet - this is infrastructure only.
  */
 @Module({
   imports: [

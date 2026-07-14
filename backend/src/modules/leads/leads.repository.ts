@@ -46,7 +46,7 @@ export class LeadsRepository {
       .exec();
   }
 
-  /** Soft delete — flags the document; relations are never orphaned. */
+  /** Soft delete - flags the document; relations are never orphaned. */
   softDelete(id: string, tenant: FilterQuery<LeadDocument> = {}): Promise<LeadDocument | null> {
     return this.model
       .findOneAndUpdate(

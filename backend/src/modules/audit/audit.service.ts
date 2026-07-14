@@ -76,7 +76,7 @@ export class AuditService {
   ): Promise<PaginatedResponse<AuditLogDocument>> {
     // Tenant isolation: super-admins see the platform-wide trail; every other
     // principal is hard-scoped to their organization (and a non-super principal
-    // with no organization is rejected — it can never see cross-tenant logs).
+    // with no organization is rejected - it can never see cross-tenant logs).
     const filter: FilterQuery<AuditLogDocument> = { ...tenantFilter<AuditLogDocument>(actor) };
     if (query.action) filter.action = query.action;
     if (query.entity) filter.entity = query.entity;

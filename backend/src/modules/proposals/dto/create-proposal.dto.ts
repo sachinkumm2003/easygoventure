@@ -17,7 +17,7 @@ export class CreateProposalDto {
   @IsMongoId()
   leadId!: string;
 
-  @ApiProperty({ example: 'Dubai 4N/5D Package — 2 Adults' })
+  @ApiProperty({ example: 'Dubai 4N/5D Package - 2 Adults' })
   @IsString()
   @MinLength(2)
   title!: string;

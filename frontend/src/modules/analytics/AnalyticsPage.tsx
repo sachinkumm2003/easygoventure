@@ -19,7 +19,7 @@ import { useProposals } from '@shared/queries/proposals.queries';
 import { InquiryType } from '@shared/types/domain';
 import { formatCurrency, titleCase } from '@shared/lib/format';
 
-// Sage Luxury categorical palette (brand set) — no generic blues.
+// Sage Luxury categorical palette (brand set) - no generic blues.
 const PIE_COLORS = ['#3F6F63', '#5F8E83', '#E9A7A2', '#D9A441', '#4F8A5B', '#C65B5B'];
 
 export default function AnalyticsPage() {

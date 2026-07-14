@@ -42,7 +42,7 @@ export function DocumentsTab({ proposalId }: { proposalId: string }) {
           ))}
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          Documents are assembled from the proposal snapshot, travelers and bookings. Only metadata is stored — the file is generated on demand.
+          Documents are assembled from the proposal snapshot, travelers and bookings. Only metadata is stored - the file is generated on demand.
         </p>
       </Card>
 
@@ -83,7 +83,7 @@ export function DocumentsTab({ proposalId }: { proposalId: string }) {
         open={Boolean(preview)}
         onOpenChange={(o) => !o && setPreview(null)}
         title={preview?.title ?? 'Document'}
-        description="Live preview — assembled from current proposal data."
+        description="Live preview - assembled from current proposal data."
         footer={
           <Button variant="secondary" onClick={() => window.print()}>
             <Eye /> Print / Save PDF

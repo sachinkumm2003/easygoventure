@@ -13,7 +13,7 @@ import { SystemRole } from '../modules/auth/rbac/system-roles';
 /**
  * Create (or update) a platform administrator: `npm run create:admin`.
  *
- * Idempotent — keyed on email. Assigns a seeded system role and (optionally) an
+ * Idempotent - keyed on email. Assigns a seeded system role and (optionally) an
  * organization context. A SUPER_ADMIN with an organization gets both cross-org
  * visibility AND the ability to create org-scoped records.
  *
@@ -94,7 +94,7 @@ async function main(): Promise<void> {
     console.log(`  Email        : ${email}`);
     console.log(`  Password     : ${password}`);
     console.log(`  Role         : ${roleCode}`);
-    console.log(`  Organization : ${org ? orgSlug : '(none — platform only)'}`);
+    console.log(`  Organization : ${org ? orgSlug : '(none - platform only)'}`);
     console.log('\nSign in at /login with the email + password above.');
   } finally {
     await mongoose.disconnect();

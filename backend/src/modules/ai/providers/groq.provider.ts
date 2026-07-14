@@ -10,7 +10,7 @@ const REQUEST_TIMEOUT_MS = 15_000;
 const MAX_RETRIES = 1;
 
 /**
- * Groq AI provider — talks to the Groq Chat Completions API via the official
+ * Groq AI provider - talks to the Groq Chat Completions API via the official
  * `groq-sdk`. Configuration comes from the `ai` config namespace. The SDK exposes
  * an OpenAI-compatible surface, so `messages`, `temperature`, `max_tokens` and
  * `response_format` map straight through.

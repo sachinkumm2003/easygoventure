@@ -21,7 +21,7 @@ export class ServiceCategoriesRepository {
     return this.model.findOne({ code }).exec();
   }
 
-  /** Idempotent write used by the seeder — creates or updates by unique `code`. */
+  /** Idempotent write used by the seeder - creates or updates by unique `code`. */
   async upsert(data: Partial<ServiceCategory>): Promise<void> {
     await this.model.updateOne({ code: data.code }, { $set: data }, { upsert: true }).exec();
   }

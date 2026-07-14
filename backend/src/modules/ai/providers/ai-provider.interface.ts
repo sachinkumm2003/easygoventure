@@ -1,6 +1,6 @@
 /**
  * Provider-agnostic chat abstraction. Swapping vendors (Groq, OpenAI, Bedrock…)
- * means adding a class that implements this interface — no call-site changes.
+ * means adding a class that implements this interface - no call-site changes.
  */
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';

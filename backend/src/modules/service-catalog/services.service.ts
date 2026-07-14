@@ -89,7 +89,7 @@ export class ServicesService {
     if (!Types.ObjectId.isValid(id)) {
       throw new ValidationException(`"${id}" is not a valid id`, 'INVALID_ID');
     }
-    // Tenant isolation is enforced in the query — a service outside the caller's
+    // Tenant isolation is enforced in the query - a service outside the caller's
     // organization is never fetched, and simply reads as "not found".
     const service = await this.services.findByIdScoped(id, tenantFilter<ServiceDocument>(user));
     if (!service) {

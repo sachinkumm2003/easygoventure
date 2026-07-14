@@ -27,7 +27,7 @@ export interface TripTimeline {
 }
 
 /**
- * TravelTimelineService — derives a proposal's complete, chronological trip
+ * TravelTimelineService - derives a proposal's complete, chronological trip
  * itinerary from its bookings (hotel stays, transfers, activities, flights) and
  * visa milestones. The timeline is ALWAYS derived, never manually maintained.
  */

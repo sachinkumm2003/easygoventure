@@ -15,7 +15,7 @@ import { reconcileRolelessOwners } from './rbac-reconcile';
  * Idempotently ensures the permission catalog and system-role templates exist in
  * the database on every boot. This guarantees that a brand-new / never-seeded
  * database is immediately usable: a self-service signup can assign the
- * ORGANIZATION_OWNER role and the new owner receives the full permission set —
+ * ORGANIZATION_OWNER role and the new owner receives the full permission set -
  * no manual `npm run seed:catalog` required.
  *
  * Only shared system data (permissions + `organizationId: null` role templates)
@@ -81,9 +81,9 @@ export class RbacBootstrapService implements OnApplicationBootstrap {
         `RBAC ready: ${PERMISSION_CATALOG.length} permissions, ${ROLE_DEFINITIONS.length} system roles ensured.`,
       );
     } catch (error) {
-      // Never block boot on this — but make the failure loud (signup would 403 without it).
+      // Never block boot on this - but make the failure loud (signup would 403 without it).
       this.logger.error(
-        `RBAC auto-seed failed — new signups may lack permissions until seeded: ${
+        `RBAC auto-seed failed - new signups may lack permissions until seeded: ${
           (error as Error).message
         }`,
       );

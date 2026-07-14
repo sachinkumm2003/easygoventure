@@ -23,7 +23,7 @@ import { RbacBootstrapService } from './rbac/rbac-bootstrap.service';
 /**
  * Authentication & authorization.
  *
- * Registers the JWT strategy and the global guard chain — in order:
+ * Registers the JWT strategy and the global guard chain - in order:
  *   1. JwtAuthGuard      (authN; honours @Public())
  *   2. PermissionsGuard  (authZ; honours @RequirePermissions())
  *   3. RolesGuard        (coarse @Roles() gate, retained for compatibility)

@@ -6,7 +6,7 @@ export type BudgetTier = 'Budget' | 'Mid-range' | 'Premium' | 'Luxury';
 export const BUDGET_TIERS: BudgetTier[] = ['Budget', 'Mid-range', 'Premium', 'Luxury'];
 
 /**
- * Image-ready hotel card. `imageUrls` is intentionally present but empty — the
+ * Image-ready hotel card. `imageUrls` is intentionally present but empty - the
  * architecture supports hotel imagery without generating any today (Phase 3.7 #9).
  */
 export interface HotelCard {

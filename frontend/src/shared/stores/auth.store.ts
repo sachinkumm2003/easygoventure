@@ -19,7 +19,7 @@ interface AuthState {
 
 /**
  * Central auth state. Tokens + user are persisted to localStorage so the session
- * survives a refresh / browser restart; `status` is NOT persisted — it is resolved
+ * survives a refresh / browser restart; `status` is NOT persisted - it is resolved
  * on boot by AuthBoot (validate token → authenticated, else unauthenticated).
  */
 export const useAuthStore = create<AuthState>()(

@@ -8,10 +8,10 @@ export enum HotelDetailStatus {
 }
 
 /**
- * HotelBookingDetails — hotel-specific operational data embedded on a HOTEL
+ * HotelBookingDetails - hotel-specific operational data embedded on a HOTEL
  * Booking (the parent Booking IS the supplier confirmation; this carries the
  * stay-level specifics). Derived metrics (`nights`, `roomNights`) are computed,
- * never stored — see `hotelDetailMetrics`.
+ * never stored - see `hotelDetailMetrics`.
  */
 @Schema({ _id: false })
 export class HotelBookingDetails {
@@ -42,7 +42,7 @@ export class HotelBookingDetails {
 
 export const HotelBookingDetailsSchema = SchemaFactory.createForClass(HotelBookingDetails);
 
-/** Derived stay metrics — computed from the check-in/out window and room count. */
+/** Derived stay metrics - computed from the check-in/out window and room count. */
 export function hotelDetailMetrics(
   details: Pick<HotelBookingDetails, 'checkInDate' | 'checkOutDate' | 'roomCount'> | null | undefined,
 ): { nights: number; roomNights: number } {

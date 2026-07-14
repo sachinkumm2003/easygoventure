@@ -17,7 +17,7 @@ export enum TravelerGender {
 export type TravelerDocument = HydratedDocument<Traveler>;
 
 /**
- * Traveler — a real person travelling under a booked proposal.
+ * Traveler - a real person travelling under a booked proposal.
  *
  * A proposal may carry many travelers. Travelers stay linked to the proposal
  * (and therefore to its frozen commercial snapshot) via `proposalId`, so the

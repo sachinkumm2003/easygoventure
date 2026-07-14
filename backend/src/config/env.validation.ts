@@ -9,7 +9,7 @@ export const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(8080),
   API_PREFIX: z.string().default('api'),
 
-  // CORS — comma-separated list of allowed origins
+  // CORS - comma-separated list of allowed origins
   ALLOWED_ORIGINS: z.string().default('http://localhost:5173'),
 
   // Database (MongoDB)
@@ -20,13 +20,13 @@ export const envSchema = z.object({
   GROQ_API_KEY: z.string().optional(),
   GROQ_MODEL: z.string().default('qwen/qwen3.6-27b'),
   // Reasoning models (e.g. Qwen3) "think" before answering, which burns the token
-  // budget and breaks JSON mode. Default 'none' disables it — best for our short
+  // budget and breaks JSON mode. Default 'none' disables it - best for our short
   // extraction/copy tasks. Use 'auto' to omit the param for non-reasoning models.
   GROQ_REASONING_EFFORT: z
     .enum(['none', 'default', 'low', 'medium', 'high', 'auto'])
     .default('none'),
 
-  // API gate — when set, all routes (except /health) require the x-api-key header.
+  // API gate - when set, all routes (except /health) require the x-api-key header.
   // Leave empty to disable the gate for local development.
   API_KEY: z.string().optional(),
 
@@ -42,7 +42,7 @@ export const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(32, 'JWT_REFRESH_SECRET must be at least 32 chars'),
   JWT_REFRESH_TTL: z.string().default('7d'),
 
-  // Auth policy — account lockout & password reset
+  // Auth policy - account lockout & password reset
   AUTH_MAX_FAILED_LOGINS: z.coerce.number().int().positive().default(5),
   AUTH_LOCKOUT_MINUTES: z.coerce.number().int().positive().default(15),
   AUTH_REFRESH_TTL_DAYS: z.coerce.number().int().positive().default(7),

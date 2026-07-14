@@ -16,7 +16,7 @@ export interface HotelSeedStats {
 /**
  * HotelCatalogSeeder
  * ------------------
- * Stage 5 (final). Imports the file-based catalog — never the raw .docx — into
+ * Stage 5 (final). Imports the file-based catalog - never the raw .docx - into
  * MongoDB. Idempotent by design: it upserts on `name + city`, so running it any
  * number of times converges to the same state (insert once, update thereafter).
  *

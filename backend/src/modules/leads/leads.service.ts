@@ -28,7 +28,7 @@ export class LeadsService {
 
   async create(dto: CreateLeadDto, actor: AuthenticatedUser): Promise<LeadDocument> {
     const organizationId = requireOrganizationId(actor);
-    const lead = await this.leads.create({ ...dto, organizationId });
+    const lead = await this.leads.create({ ...dto, organizationId } as never);
     await this.appendActivity(
       lead.id as string,
       LeadActivityType.LEAD_CREATED,
@@ -81,7 +81,7 @@ export class LeadsService {
     const existing = await this.findByIdOrThrow(id, actor);
     const statusChanged = dto.status !== undefined && dto.status !== existing.status;
 
-    const updated = await this.leads.update(id, dto, tenantFilter<LeadDocument>(actor));
+    const updated = await this.leads.update(id, dto as never, tenantFilter<LeadDocument>(actor));
     if (!updated) throw new NotFoundException(`Lead "${id}" not found`, 'LEAD_NOT_FOUND');
 
     if (statusChanged) {
@@ -139,7 +139,7 @@ export class LeadsService {
 
   /**
    * Append a timeline entry. Public so sibling modules (proposals, fulfillments,
-   * follow-ups) can record their own events against a lead — they pass the
+   * follow-ups) can record their own events against a lead - they pass the
    * record's `organizationId` so every activity stays tenant-scoped.
    */
   appendActivity(

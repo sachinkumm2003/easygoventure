@@ -33,7 +33,7 @@ export class HotelCatalogNormalizer {
   private static readonly CONTROL = new RegExp('[\\u0000-\\u001F\\u007F]', 'g');
   private static readonly STAR_GLYPH = new RegExp(String.fromCodePoint(0x2b50), 'g');
 
-  /** Rules applied at least once — surfaced in the report for auditability. */
+  /** Rules applied at least once - surfaced in the report for auditability. */
   readonly appliedRules = new Set<string>();
 
   normalize(raw: RawHotelRecord): NormalizedHotel {

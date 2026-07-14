@@ -77,7 +77,7 @@ export default function HotelsPage() {
       ),
     },
     { key: 'starRating', header: 'Rating', render: (h) => <Stars count={h.starRating} /> },
-    { key: 'area', header: 'Area', render: (h) => h.area ?? '—' },
+    { key: 'area', header: 'Area', render: (h) => h.area ?? '-' },
     { key: 'city', header: 'City', render: (h) => h.city },
     {
       key: 'country',
@@ -91,7 +91,7 @@ export default function HotelsPage() {
     <div className="space-y-5">
       <PageHeader
         title="Hotel Catalog"
-        description="Curated hotels the agency books into — searchable, filterable, always available."
+        description="Curated hotels the agency books into - searchable, filterable, always available."
         actions={
           <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
             <Button
@@ -117,7 +117,7 @@ export default function HotelsPage() {
       {usingFallback && (
         <div className="flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
           <WifiOff className="size-4 shrink-0" />
-          <span>Using local catalog — showing the bundled hotel list while the live database is unavailable.</span>
+          <span>Using local catalog - showing the bundled hotel list while the live database is unavailable.</span>
         </div>
       )}
 

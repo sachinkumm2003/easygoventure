@@ -16,7 +16,7 @@ export class PermissionsService {
     return this.repo.findAll();
   }
 
-  /** Catalog grouped by resource area — handy for rendering a permission matrix. */
+  /** Catalog grouped by resource area - handy for rendering a permission matrix. */
   async findGrouped(): Promise<PermissionGroupView[]> {
     const all = await this.repo.findAll();
     const byGroup = new Map<string, PermissionGroupView>();

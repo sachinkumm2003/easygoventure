@@ -24,7 +24,7 @@ export enum QuotationStatus {
 export type QuotationDocument = HydratedDocument<Quotation>;
 
 /**
- * Quotation — the customer-facing commercial document. It FREEZES the package
+ * Quotation - the customer-facing commercial document. It FREEZES the package
  * pricing into an embedded snapshot at generation time; the quotation never
  * changes when future vendor rates change.
  */

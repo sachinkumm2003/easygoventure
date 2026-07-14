@@ -8,7 +8,7 @@ import { LeadsService } from './leads.service';
 import { LeadsController } from './leads.controller';
 
 /**
- * Leads — the primary workflow entity. Owns the lead record and its timeline.
+ * Leads - the primary workflow entity. Owns the lead record and its timeline.
  * Exports `LeadsService` so sibling modules can log activities and drive status.
  */
 @Module({

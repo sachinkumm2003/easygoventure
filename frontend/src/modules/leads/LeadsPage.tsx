@@ -15,6 +15,7 @@ import { useDebouncedValue } from '@shared/hooks/useDebouncedValue';
 import { InquiryType, LeadStatus, type Lead } from '@shared/types/domain';
 import { formatDate, formatRelative, titleCase } from '@shared/lib/format';
 import { leadTone } from '@shared/lib/status';
+import { useAddLeadActivity } from '@shared/mutations/leads.mutations';
 import { LeadCreateDialog } from './LeadCreateDialog';
 import { LeadDrawer } from './LeadDrawer';
 import { leadDisplayName } from './lead-display';
@@ -56,11 +57,23 @@ export default function LeadsPage() {
 
   const { data, isLoading, isError, error, refetch } = useLeads(query);
 
-  const openLead = (id: string) => {
+  const addActivity = useAddLeadActivity();
+
+  const openLead = (id: string, whatsappGreeting?: string) => {
     const next = new URLSearchParams(searchParams);
     next.set('lead', id);
     next.delete('new');
     setSearchParams(next);
+    if (whatsappGreeting) {
+      addActivity.mutate({
+        id,
+        input: {
+          type: 'WHATSAPP_MESSAGE',
+          description: whatsappGreeting,
+          metadata: { auto: true, channel: 'whatsapp' },
+        },
+      });
+    }
   };
   const closeLead = () => {
     const next = new URLSearchParams(searchParams);
@@ -86,7 +99,7 @@ export default function LeadsPage() {
         </div>
       ),
     },
-    { key: 'companyName', header: 'Company', render: (l) => l.companyName ?? '—' },
+    { key: 'companyName', header: 'Company', render: (l) => l.companyName ?? '-' },
     { key: 'phone', header: 'Phone', render: (l) => <span className="tabular-nums">{l.phone}</span> },
     { key: 'inquiryType', header: 'Inquiry', render: (l) => titleCase(l.inquiryType) },
     {

@@ -37,7 +37,7 @@ export interface ProposalRisk {
 }
 
 /**
- * OperationalRiskService — assesses a proposal's operational readiness and
+ * OperationalRiskService - assesses a proposal's operational readiness and
  * returns a LOW / MEDIUM / HIGH risk with the specific issues that drove it.
  * Severity escalates as the departure date approaches.
  */

@@ -12,7 +12,7 @@ export enum PackageStatus {
 export type PackageDocument = HydratedDocument<Package>;
 
 /**
- * Package — the INTERNAL costing workspace (not customer-facing). Holds the trip
+ * Package - the INTERNAL costing workspace (not customer-facing). Holds the trip
  * shape plus derived totals. Every total is computed by the PricingEngine from
  * the package's items; there are no manually-entered totals.
  */

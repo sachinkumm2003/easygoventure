@@ -10,7 +10,7 @@ import { reconcileRolelessOwners } from '../modules/auth/rbac/rbac-reconcile';
  *
  * Finds users with `organizationId` set but empty `roleIds` and, for any
  * organization that has no owner, promotes the founder to ORGANIZATION_OWNER.
- * Idempotent and safe — see reconcileRolelessOwners for the exact rule.
+ * Idempotent and safe - see reconcileRolelessOwners for the exact rule.
  * Requires roles to be seeded (run `npm run seed:catalog` or just boot the app).
  */
 async function main(): Promise<void> {
@@ -32,7 +32,7 @@ async function main(): Promise<void> {
     const report = await reconcileRolelessOwners(Users, Roles);
 
     if (report.repaired.length === 0) {
-      console.log('Nothing to repair — every organization already has an owner.');
+      console.log('Nothing to repair - every organization already has an owner.');
     } else {
       for (const r of report.repaired) {
         console.log(`Repaired ${r.email}`);

@@ -74,7 +74,7 @@ export class RevenuePipelineRepository {
     return { revenue: rows[0]?.revenue ?? 0, profit: rows[0]?.profit ?? 0 };
   }
 
-  /** Open pipeline value — sent but not yet accepted/rejected. */
+  /** Open pipeline value - sent but not yet accepted/rejected. */
   async pipelineRevenue(scope: Scope): Promise<number> {
     const rows = await this.quotations
       .aggregate<SumResult>([

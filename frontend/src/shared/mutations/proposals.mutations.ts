@@ -50,7 +50,7 @@ export function useAcceptProposal() {
     mutationFn: (id: string) => proposalsService.accept(id),
     onSuccess: (res) => {
       invalidate(res.proposal.leadId);
-      toast.success('Proposal accepted — fulfillment opened');
+      toast.success('Proposal accepted - fulfillment opened');
     },
     onError,
   });

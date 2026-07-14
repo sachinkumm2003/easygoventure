@@ -10,7 +10,7 @@ import { VendorsController } from './vendors.controller';
 import { VendorRatesController } from './vendor-rates.controller';
 
 /**
- * Vendors — tenant-scoped supplier directory and their net rates. Foundation
+ * Vendors - tenant-scoped supplier directory and their net rates. Foundation
  * storage + CRUD only (no pricing/markup/rate-resolution). Exports the services
  * so downstream pricing modules can read vendors and rates.
  */

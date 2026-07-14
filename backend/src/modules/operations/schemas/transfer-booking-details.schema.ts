@@ -7,7 +7,7 @@ export enum TransferDetailStatus {
 }
 
 /**
- * TransferBookingDetails — transfer-specific operational data embedded on a
+ * TransferBookingDetails - transfer-specific operational data embedded on a
  * TRANSFER Booking (pickup/drop, driver + vehicle assignment).
  */
 @Schema({ _id: false })

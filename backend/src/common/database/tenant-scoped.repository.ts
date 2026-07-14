@@ -20,7 +20,7 @@ export type TenantScope<TDoc> = FilterQuery<TDoc>;
  * It makes tenant isolation STRUCTURAL: reads, updates and soft-deletes all embed
  * the organization filter directly in the Mongo query, so a document outside the
  * caller's scope is never fetched or mutated. A future repository that extends
- * this base inherits tenant safety by default — it cannot accidentally perform an
+ * this base inherits tenant safety by default - it cannot accidentally perform an
  * unscoped by-id write, because the scoped methods are the only ones provided.
  *
  * Concrete repositories add their own `create()` and any bespoke finders; those

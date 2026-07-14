@@ -9,7 +9,7 @@ export enum VisaStatus {
 }
 
 /**
- * VisaProcessing — visa-specific operational data embedded on a VISA Booking.
+ * VisaProcessing - visa-specific operational data embedded on a VISA Booking.
  * Tracks the document → submission → processing → decision milestones that the
  * timeline and risk engines read.
  */

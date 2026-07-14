@@ -76,6 +76,7 @@ export function Sidebar() {
                 <Tooltip key={item.label} label={collapsed ? item.label : ''} side="right">
                   <NavLink
                     to={item.to}
+                    end={item.end}
                     className={({ isActive }) =>
                       cn(
                         base,

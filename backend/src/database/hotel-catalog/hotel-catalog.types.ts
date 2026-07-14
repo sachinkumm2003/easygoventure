@@ -18,7 +18,7 @@ export const DEFAULT_CITY = 'Dubai' as const;
 export const DEFAULT_COUNTRY = 'UAE' as const;
 
 /**
- * Stage 1 output — a raw, untrusted row exactly as pulled from the document.
+ * Stage 1 output - a raw, untrusted row exactly as pulled from the document.
  * No cleaning is applied yet; every value is a string (possibly empty/dirty).
  */
 export interface RawHotelRecord {
@@ -30,7 +30,7 @@ export interface RawHotelRecord {
 }
 
 /**
- * Stage 2 output — a normalized record with business defaults applied.
+ * Stage 2 output - a normalized record with business defaults applied.
  * `starRating` may still be null if the source rating could not be resolved
  * (the validator rejects those downstream).
  */
@@ -42,7 +42,7 @@ export interface NormalizedHotel {
   city: string;
   country: string;
   isActive: boolean;
-  /** Provenance from the raw stage — kept internal, stripped before seeding. */
+  /** Provenance from the raw stage - kept internal, stripped before seeding. */
   sourceRow: number;
 }
 

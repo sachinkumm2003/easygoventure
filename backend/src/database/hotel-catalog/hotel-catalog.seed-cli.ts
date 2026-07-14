@@ -11,7 +11,7 @@ import { HotelCatalogSeeder } from './hotel-catalog.seeder';
  * Standalone hotel-catalog seed command: `npm run seed:hotels`.
  *
  * Reads the file catalog (assets/catalog/hotels/dubai.hotels.json) and upserts it
- * into MongoDB. Idempotent — safe to run repeatedly. Generate the dataset first
+ * into MongoDB. Idempotent - safe to run repeatedly. Generate the dataset first
  * with `npm run hotels:build` if it does not exist.
  */
 async function main(): Promise<void> {

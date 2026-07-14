@@ -19,5 +19,6 @@ export const ROUTES = {
   analytics: '/analytics',
   ai: '/ai',
   settings: '/settings',
+  brain: '/settings/brain',
   notFound: '/404',
 } as const;

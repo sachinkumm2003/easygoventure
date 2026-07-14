@@ -1,4 +1,4 @@
-// Phase 2 / 2.1 / 3 domain types — commercial engine + operations engine.
+// Phase 2 / 2.1 / 3 domain types - commercial engine + operations engine.
 // Mirrors the NestJS/Mongoose backend response shapes (ids + ISO date strings).
 
 // ── Service lines ────────────────────────────────────────────────────────────
@@ -341,7 +341,7 @@ export interface HotelCard {
   location: string;
   tier: BudgetTier;
   highlights: string[];
-  /** Present but empty today — architecture is ready for hotel imagery. */
+  /** Present but empty today - architecture is ready for hotel imagery. */
   imageUrls: string[];
 }
 

@@ -34,7 +34,7 @@ export class ChatResponseDto {
 
 export class NextActionResponseDto {
   @ApiProperty({
-    example: 'The proposal expires in 5 days with no reply — schedule a follow-up to confirm.',
+    example: 'The proposal expires in 5 days with no reply - schedule a follow-up to confirm.',
     description: 'Why this action is recommended.',
   })
   summary!: string;

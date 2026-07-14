@@ -13,7 +13,7 @@ import {
  * once at startup, validates every record, and caches the result in memory. This
  * lets the hotel APIs serve data even when the database is unavailable.
  *
- * Environment-independent: no database, no network — just a bundled JSON asset.
+ * Environment-independent: no database, no network - just a bundled JSON asset.
  * Loading never throws: a missing/invalid file simply leaves the cache empty and
  * logs an error, so an app boot is never blocked by the fallback dataset.
  */
@@ -43,7 +43,7 @@ export class CatalogLoaderService implements OnModuleInit {
       this.views = [];
       this.byId.clear();
       this.logger.error(
-        `Hotel catalog file could not be loaded — JSON fallback is unavailable: ${
+        `Hotel catalog file could not be loaded - JSON fallback is unavailable: ${
           (error as Error).message
         }`,
       );

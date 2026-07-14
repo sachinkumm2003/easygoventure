@@ -163,7 +163,7 @@ export class FulfillmentsService {
     );
 
     // The lead is only COMPLETED once every related fulfillment is resolved
-    // (completed or cancelled) — a single completion no longer closes the lead.
+    // (completed or cancelled) - a single completion no longer closes the lead.
     if (updated.status === FulfillmentStatus.COMPLETED) {
       const unresolved = await this.fulfillments.countUnresolvedByLead(
         existing.leadId,

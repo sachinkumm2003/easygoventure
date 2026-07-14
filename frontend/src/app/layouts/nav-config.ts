@@ -1,5 +1,6 @@
 import {
   BedDouble,
+  Bot,
   ClipboardList,
   ConciergeBell,
   Gauge,
@@ -20,6 +21,8 @@ export interface NavItem {
   enabled: boolean;
   /** If set, the item is hidden unless the principal holds this permission. */
   permission?: string;
+  /** If true, only mark active on exact path match (prevents prefix matching). */
+  end?: boolean;
 }
 
 export interface NavSection {
@@ -51,7 +54,8 @@ export const NAV_SECTIONS: NavSection[] = [
     title: 'Insights',
     items: [
       { label: 'Reports', to: ROUTES.analytics, icon: Receipt, enabled: true, permission: 'report.read' },
-      { label: 'Settings', to: ROUTES.settings, icon: Settings, enabled: true },
+      { label: 'Brain', to: ROUTES.brain, icon: Bot, enabled: true, end: true },
+      { label: 'Settings', to: ROUTES.settings, icon: Settings, enabled: true, end: true },
     ],
   },
 ];

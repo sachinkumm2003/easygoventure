@@ -10,7 +10,7 @@ export enum AiSessionStatus {
 export type AiSessionDocument = HydratedDocument<AiSession>;
 
 /**
- * AiSession — a conversational memory container for the copilot. Holds a snapshot
+ * AiSession - a conversational memory container for the copilot. Holds a snapshot
  * of the CRM context the assistant was grounded in, so the conversation stays
  * about a specific inquiry/lead/deal.
  */

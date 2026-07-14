@@ -80,7 +80,7 @@ export class QuotationsService {
       snapshot,
     });
 
-    // Mark the source package as QUOTED (does not freeze it — re-costing is allowed
+    // Mark the source package as QUOTED (does not freeze it - re-costing is allowed
     // and produces a new immutable version).
     await this.packagesRepo.updateScoped(pkg.id as string, { status: PackageStatus.QUOTED }, { organizationId });
 
@@ -125,7 +125,7 @@ export class QuotationsService {
   }
 
   async accept(id: string, user: AuthenticatedUser): Promise<QuotationDocument> {
-    // Contractual acceptance — records who accepted; the frozen snapshot makes the
+    // Contractual acceptance - records who accepted; the frozen snapshot makes the
     // accepted commercial terms immutable (no later rate/package edit can change them).
     return this.transition(id, user, [QuotationStatus.SENT], QuotationStatus.ACCEPTED, {
       acceptedAt: new Date(),
@@ -210,7 +210,7 @@ export class QuotationsService {
     try {
       rate = await this.vendorRates.findByIdOrThrow(item.vendorRateId.toString(), user);
     } catch {
-      return null; // rate since deleted — leave the item snapshot without a rate.
+      return null; // rate since deleted - leave the item snapshot without a rate.
     }
     let vendorName: string | undefined;
     try {

@@ -1,7 +1,7 @@
 import { initials } from '@shared/lib/format';
 import { cn } from '@shared/utils/cn';
 
-// Sage Luxury avatar palette — brand-aligned tints with darker, WCAG-safe initials.
+// Sage Luxury avatar palette - brand-aligned tints with darker, WCAG-safe initials.
 const PALETTE = [
   'bg-[#3F6F63]/12 text-[#31564c]',
   'bg-[#5F8E83]/15 text-[#456b61]',

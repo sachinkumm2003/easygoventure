@@ -1,7 +1,7 @@
 /**
  * Shape of the JWT payload signed by the auth service.
  *
- * The access token stays intentionally small — it carries identity + tenant, and
+ * The access token stays intentionally small - it carries identity + tenant, and
  * the JwtStrategy resolves fresh roles/permissions from the database on every
  * request so role changes, lockouts and deactivations take effect immediately.
  */
@@ -11,7 +11,7 @@ export interface JwtPayload {
   organizationId: string | null;
   /** Distinguishes access vs refresh tokens. */
   type: 'access' | 'refresh';
-  /** Session id — present on refresh tokens for rotation/revocation. */
+  /** Session id - present on refresh tokens for rotation/revocation. */
   sid?: string;
   /** Unique per-issue nonce so tokens are never byte-identical (even same-second). */
   jti?: string;

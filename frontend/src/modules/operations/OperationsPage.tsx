@@ -55,13 +55,13 @@ export default function OperationsPage() {
   const { data, isLoading, isError, refetch } = useOperationsDashboard();
   const revenue = useRevenuePipeline();
 
-  const successRate = data ? `${data.bookingSuccessRate}%` : '—';
+  const successRate = data ? `${data.bookingSuccessRate}%` : '-';
 
   return (
     <div className="space-y-5">
       <PageHeader
         title="Operations"
-        description="Live command centre for real-world travel execution — departures, bookings, and risk."
+        description="Live command centre for real-world travel execution - departures, bookings, and risk."
       />
 
       {isError ? (

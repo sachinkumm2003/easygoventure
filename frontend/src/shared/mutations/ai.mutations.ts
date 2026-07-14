@@ -4,6 +4,8 @@ import { ApiError } from '@shared/api/http';
 import {
   aiService,
   type ChatInput,
+  type LeadChatInput,
+  type LeadIntakeChatInput,
   type FollowupSuggestionInput,
   type NextActionInput,
   type ProposalDraftInput,
@@ -41,4 +43,15 @@ export function useAiNextAction() {
 
 export function useProposalDraft() {
   return useMutation({ mutationFn: (input: ProposalDraftInput) => aiService.proposalDraft(input), onError });
+}
+
+export function useLeadChat() {
+  return useMutation({ mutationFn: (input: LeadChatInput) => aiService.leadChat(input), onError });
+}
+
+export function useLeadIntakeChat() {
+  return useMutation({
+    mutationFn: (input: LeadIntakeChatInput) => aiService.leadIntakeChat(input),
+    onError,
+  });
 }

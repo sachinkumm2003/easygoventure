@@ -5,7 +5,7 @@ import { baseSchemaOptions } from '../../../common/database/schema-options';
 export type OrganizationDocument = HydratedDocument<Organization>;
 
 /**
- * Organization — the tenant boundary. Every tenant-owned business record carries
+ * Organization - the tenant boundary. Every tenant-owned business record carries
  * an `organizationId` pointing here. This is the root of the multi-tenant model.
  */
 @Schema({ ...baseSchemaOptions, collection: 'organizations' })

@@ -114,5 +114,7 @@ export const http = {
     unwrap<T>(axiosInstance.post<ApiEnvelope<T>>(url, body)),
   patch: <T>(url: string, body?: unknown) =>
     unwrap<T>(axiosInstance.patch<ApiEnvelope<T>>(url, body)),
+  put: <T>(url: string, body?: unknown) =>
+    unwrap<T>(axiosInstance.put<ApiEnvelope<T>>(url, body)),
   delete: <T>(url: string) => unwrap<T>(axiosInstance.delete<ApiEnvelope<T>>(url)),
 };

@@ -13,7 +13,7 @@ import { OperationsContextService } from '../operations/operations-context.servi
 /**
  * Read-only commercial context for AI grounding. Returns structured context +
  * a compact summary the client can pass to the existing /ai/chat as `context`.
- * No pricing, writes, or approvals — infrastructure only.
+ * No pricing, writes, or approvals - infrastructure only.
  */
 @ApiTags('ai-context')
 @ApiStandardErrors()

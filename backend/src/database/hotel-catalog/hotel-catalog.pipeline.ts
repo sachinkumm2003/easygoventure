@@ -18,7 +18,7 @@ import {
 } from '../../modules/hotels/catalog/hotel-catalog-record';
 
 /**
- * Hotel-catalog data pipeline (offline data-prep — no database).
+ * Hotel-catalog data pipeline (offline data-prep - no database).
  *
  *   Raw .docx -> Parse -> Normalize -> Validate -> Deduplicate -> Clean JSON + Report
  *
@@ -125,7 +125,7 @@ function buildReport(out: PipelineOutput): string {
   const missingArea = out.clean.filter((h) => !h.area);
 
   const lines: string[] = [];
-  lines.push('# Hotel Catalog — Data Quality Report');
+  lines.push('# Hotel Catalog - Data Quality Report');
   lines.push('');
   lines.push(`> Source asset: \`assets/${stats.sourceFile}\``);
   lines.push('> Pipeline: Parse → Normalize → Validate → Deduplicate → Clean JSON');
@@ -170,7 +170,7 @@ function buildReport(out: PipelineOutput): string {
   lines.push('## Rejected records');
   lines.push('');
   if (rejected.length === 0) {
-    lines.push('_None — every parsed record met the minimum contract (name + valid rating)._');
+    lines.push('_None - every parsed record met the minimum contract (name + valid rating)._');
   } else {
     lines.push('| Reason | Record |');
     lines.push('|--------|--------|');
@@ -196,12 +196,12 @@ function buildReport(out: PipelineOutput): string {
     lines.push('_None._');
   } else {
     for (const c of exact) {
-      lines.push(`- "${c.dropped?.name}" (row ${c.dropped?.sourceRow}) — ${c.note}`);
+      lines.push(`- "${c.dropped?.name}" (row ${c.dropped?.sourceRow}) - ${c.note}`);
     }
   }
   lines.push('');
 
-  lines.push('## Near-duplicate candidates (both kept — review, do not blind-merge)');
+  lines.push('## Near-duplicate candidates (both kept - review, do not blind-merge)');
   lines.push('');
   if (near.length === 0) {
     lines.push('_None above the similarity threshold._');
@@ -215,7 +215,7 @@ function buildReport(out: PipelineOutput): string {
   lines.push('## Missing-area records (kept; area is optional)');
   lines.push('');
   if (missingArea.length === 0) {
-    lines.push('_None — every record has an area._');
+    lines.push('_None - every record has an area._');
   } else {
     for (const h of missingArea) lines.push(`- ${h.name} (${h.starRating}-star)`);
   }
@@ -251,7 +251,7 @@ function main(): void {
     .map((record, index) => ({ index, ...validateHotelCatalogRecord(record) }))
     .filter((r) => !r.valid);
   if (invalid.length > 0) {
-    console.error(`\n✗ Dataset validation failed — ${invalid.length} invalid record(s):`);
+    console.error(`\n✗ Dataset validation failed - ${invalid.length} invalid record(s):`);
     for (const r of invalid.slice(0, 20)) {
       console.error(`  - record #${r.index}: ${r.reason}`);
     }

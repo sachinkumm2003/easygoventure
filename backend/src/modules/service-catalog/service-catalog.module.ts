@@ -13,7 +13,7 @@ import { ServicesService } from './services.service';
 import { ServicesRepository } from './services.repository';
 
 /**
- * Service catalog — global {@link ServiceCategory} reference data plus the
+ * Service catalog - global {@link ServiceCategory} reference data plus the
  * tenant-scoped {@link Service} offerings that replace the legacy service enums.
  * AuditService is @Global, so it needs no import here.
  */

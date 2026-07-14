@@ -25,7 +25,7 @@ export interface OperationsDashboard {
 }
 
 /**
- * OperationsDashboardService — tenant-scoped operational metrics. Super-admins
+ * OperationsDashboardService - tenant-scoped operational metrics. Super-admins
  * get a platform-wide roll-up; everyone else is hard-scoped to their org (via
  * `tenantFilter`). Every underlying query embeds that scope.
  */

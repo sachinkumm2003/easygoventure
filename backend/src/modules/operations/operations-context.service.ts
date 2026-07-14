@@ -14,10 +14,10 @@ export interface OperationsAiContext {
 }
 
 /**
- * OperationsContextProvider — AI INFRASTRUCTURE ONLY. A read-only assembly of the
+ * OperationsContextProvider - AI INFRASTRUCTURE ONLY. A read-only assembly of the
  * operational picture (travelers, booking status, timeline, risk, pending actions,
  * upcoming departures) for future AI workflows. It performs NO booking, NO
- * confirmation and NO traveler modification — human approval remains mandatory.
+ * confirmation and NO traveler modification - human approval remains mandatory.
  */
 @Injectable()
 export class OperationsContextService {
@@ -79,7 +79,7 @@ export class OperationsContextService {
       `Proposal ${proposalId}: ${active.length} active traveler(s) ` +
       `(${missingPassport} missing passport), ${confirmed}/${bookingList.length} booking(s) confirmed, ` +
       `operational risk ${risk.level}` +
-      (risk.issues.length ? ` — ${risk.issues.length} issue(s).` : '.');
+      (risk.issues.length ? ` - ${risk.issues.length} issue(s).` : '.');
 
     return { type: 'operations', summary, data };
   }

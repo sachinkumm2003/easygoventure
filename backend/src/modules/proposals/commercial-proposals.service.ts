@@ -47,7 +47,7 @@ export class CommercialProposalsService {
     return proposal;
   }
 
-  /** Read-only readiness evaluation (no status change) — used by AI context. */
+  /** Read-only readiness evaluation (no status change) - used by AI context. */
   async evaluateReadiness(id: string, user: AuthenticatedUser): Promise<ReadinessResult> {
     const proposal = await this.getProposalOrThrow(id, user);
     return this.readiness.validate(proposal);

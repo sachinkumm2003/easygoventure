@@ -30,6 +30,7 @@ import { OperationsModule } from './modules/operations/operations.module';
 import { FulfillmentsModule } from './modules/fulfillments/fulfillments.module';
 import { FollowupsModule } from './modules/followups/followups.module';
 import { AiModule } from './modules/ai/ai.module';
+import { BrainModule } from './modules/brain/brain.module';
 
 @Module({
   imports: [
@@ -70,7 +71,7 @@ import { AiModule } from './modules/ai/ai.module';
     HealthModule,
     AuditModule,
 
-    // Platform foundations (Phase 1) — tenancy, RBAC, identity
+    // Platform foundations (Phase 1) - tenancy, RBAC, identity
     AuthModule,
     OrganizationsModule,
     DepartmentsModule,
@@ -100,6 +101,7 @@ import { AiModule } from './modules/ai/ai.module';
     FulfillmentsModule,
     FollowupsModule,
     AiModule,
+    BrainModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

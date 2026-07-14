@@ -14,7 +14,7 @@ export interface TenantActor {
  * Mongo filter fragment that scopes a query to the actor's organization.
  *
  * - Super-admins get an empty (cross-organization) fragment.
- * - Any other actor without an organization is REJECTED — a non-super principal
+ * - Any other actor without an organization is REJECTED - a non-super principal
  *   can never run an unscoped query, which is the core tenant-isolation guarantee.
  */
 export function tenantFilter<T>(actor: TenantActor): FilterQuery<T> {

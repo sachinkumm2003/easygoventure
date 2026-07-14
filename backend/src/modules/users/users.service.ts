@@ -274,7 +274,7 @@ export class UsersService {
     }
     if (!actor.isSuperAdmin) {
       // Prevent privilege escalation: a non-super actor cannot grant a role that
-      // carries the platform wildcard (defensive — sanitized at role creation).
+      // carries the platform wildcard (defensive - sanitized at role creation).
       const authority = await this.roles.resolveAuthority(this.toObjectIds(roleIds));
       if (authority.isSuperAdmin) {
         throw new ForbiddenException('You cannot assign a super-admin role');

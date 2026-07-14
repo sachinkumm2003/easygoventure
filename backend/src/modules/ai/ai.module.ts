@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { HotelsModule } from '../hotels/hotels.module';
+import { BrainModule } from '../brain/brain.module';
 import { AI_PROVIDER } from './providers/ai-provider.interface';
 import { GroqProvider } from './providers/groq.provider';
 import { AIService } from './ai.service';
@@ -15,7 +16,7 @@ import { AiApproval, AiApprovalSchema } from './schemas/ai-approval.schema';
 
 /**
  * AI module. The active provider is bound to the `AI_PROVIDER` token, so swapping
- * vendors is a one-line change here — nothing downstream depends on Groq directly.
+ * vendors is a one-line change here - nothing downstream depends on Groq directly.
  *
  * The legacy stateless endpoints (parse-inquiry, followup-suggestion,
  * proposal-summary, chat, next-action) remain intact. The copilot layer adds
@@ -24,6 +25,7 @@ import { AiApproval, AiApprovalSchema } from './schemas/ai-approval.schema';
 @Module({
   imports: [
     HotelsModule,
+    BrainModule,
     MongooseModule.forFeature([
       { name: AiSession.name, schema: AiSessionSchema },
       { name: AiMessage.name, schema: AiMessageSchema },

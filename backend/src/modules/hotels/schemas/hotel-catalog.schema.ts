@@ -5,7 +5,7 @@ import { baseSchemaOptions } from '../../../common/database/schema-options';
 export type HotelCatalogDocument = HydratedDocument<HotelCatalog>;
 
 /**
- * HotelCatalog — a curated reference catalog of hotels the DMC books into.
+ * HotelCatalog - a curated reference catalog of hotels the DMC books into.
  *
  * This is intentionally GLOBAL reference data (no `organizationId`): a Dubai
  * hotel list is shared across tenants, not owned by one. Vendor-specific pricing

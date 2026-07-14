@@ -104,11 +104,179 @@ export class LeadServiceItem {
 
 export const LeadServiceItemSchema = SchemaFactory.createForClass(LeadServiceItem);
 
+export enum TravelerType {
+  ADULT = 'ADULT',
+  CHILD = 'CHILD',
+  INFANT = 'INFANT',
+}
+
+export enum FlightType {
+  OUTBOUND = 'OUTBOUND',
+  INBOUND = 'INBOUND',
+  INTERNAL = 'INTERNAL',
+}
+
+export enum FlightClass {
+  ECONOMY = 'ECONOMY',
+  BUSINESS = 'BUSINESS',
+  FIRST = 'FIRST',
+}
+
+export class LeadHotel {
+  @Prop({ trim: true })
+  hotelId?: string;
+
+  @Prop({ required: true, trim: true })
+  hotelName!: string;
+
+  @Prop({ trim: true })
+  roomType?: string;
+
+  @Prop({ trim: true })
+  mealPlan?: string;
+
+  /** Check-in date for this hotel stay (YYYY-MM-DD). */
+  @Prop({ trim: true })
+  checkIn?: string;
+
+  /** Check-out date for this hotel stay (YYYY-MM-DD). */
+  @Prop({ trim: true })
+  checkOut?: string;
+
+  @Prop({ type: Number })
+  nights?: number;
+
+  @Prop({ type: Number })
+  roomCount?: number;
+
+  @Prop({ type: Number })
+  rating?: number;
+
+  /** Price per room per night. */
+  @Prop({ type: Number })
+  pricePerNight?: number;
+
+  /** Total hotel cost = pricePerNight × nights × roomCount. */
+  @Prop({ type: Number })
+  totalPrice?: number;
+
+  @Prop({ trim: true, default: 'USD' })
+  currency?: string;
+
+  @Prop({ trim: true })
+  notes?: string;
+}
+
+export class LeadLocation {
+  /** Client-generated UUID so the frontend can key list items. */
+  @Prop({ required: true, trim: true })
+  locationId!: string;
+
+  @Prop({ required: true, trim: true })
+  city!: string;
+
+  @Prop({ trim: true })
+  country?: string;
+
+  @Prop({ type: Number })
+  nights?: number;
+
+  @Prop({ trim: true })
+  checkIn?: string;
+
+  @Prop({ trim: true })
+  checkOut?: string;
+
+  @Prop({ type: [Object], default: [] })
+  hotels!: LeadHotel[];
+}
+
+export class LeadFlight {
+  /** Client-generated UUID. */
+  @Prop({ required: true, trim: true })
+  flightId!: string;
+
+  @Prop({ type: String, enum: FlightType, default: FlightType.OUTBOUND })
+  type!: FlightType;
+
+  @Prop({ trim: true })
+  airline?: string;
+
+  @Prop({ trim: true })
+  flightNo?: string;
+
+  /** Departure airport/city (e.g. "DXB", "Dubai International"). */
+  @Prop({ trim: true })
+  from?: string;
+
+  /** Arrival airport/city. */
+  @Prop({ trim: true })
+  to?: string;
+
+  /** Departure date YYYY-MM-DD. */
+  @Prop({ trim: true })
+  date?: string;
+
+  /** Departure time HH:MM. */
+  @Prop({ trim: true })
+  departureTime?: string;
+
+  /** Arrival date YYYY-MM-DD (may differ from departure for overnight flights). */
+  @Prop({ trim: true })
+  arrivalDate?: string;
+
+  /** Arrival time HH:MM. */
+  @Prop({ trim: true })
+  arrivalTime?: string;
+
+  @Prop({ type: String, enum: FlightClass, default: FlightClass.ECONOMY })
+  flightClass?: FlightClass;
+
+  /** Price per person. */
+  @Prop({ type: Number })
+  pricePerPerson?: number;
+
+  /** Total flight cost. */
+  @Prop({ type: Number })
+  totalPrice?: number;
+
+  @Prop({ trim: true, default: 'USD' })
+  currency?: string;
+
+  @Prop({ trim: true })
+  notes?: string;
+}
+
+export class LeadTraveler {
+  @Prop({ required: true, trim: true })
+  travelerId!: string;
+
+  @Prop({ type: String, enum: TravelerType, default: TravelerType.ADULT })
+  type!: TravelerType;
+
+  @Prop({ trim: true })
+  firstName?: string;
+
+  @Prop({ trim: true })
+  lastName?: string;
+
+  @Prop({ trim: true })
+  nationality?: string;
+
+  @Prop({ trim: true })
+  passportNo?: string;
+
+  @Prop({ type: Date })
+  dob?: Date;
+
+  @Prop({ trim: true })
+  notes?: string;
+}
+
 export type LeadDocument = HydratedDocument<Lead>;
 
 @Schema({ ...baseSchemaOptions, collection: 'leads' })
 export class Lead {
-  /** Tenant owner. Added in the Phase 1.5 tenant-isolation pass. */
   @Prop({ type: Types.ObjectId, ref: 'Organization', required: true, index: true })
   organizationId!: Types.ObjectId;
 
@@ -134,10 +302,17 @@ export class Lead {
   @Prop({ type: String, enum: LeadStatus, default: LeadStatus.NEW, index: true })
   status!: LeadStatus;
 
+  /** Overall trip start date (YYYY-MM-DD). */
+  @Prop({ trim: true })
+  startDate?: string;
+
+  /** Overall trip end date (YYYY-MM-DD). */
+  @Prop({ trim: true })
+  endDate?: string;
+
   @Prop({ trim: true })
   notes?: string;
 
-  /** Raw inbound message (WhatsApp/email) the lead was created from. */
   @Prop({ trim: true })
   rawInquiry?: string;
 
@@ -216,6 +391,18 @@ export class Lead {
   @Prop({ trim: true })
   preparedBy?: string;
 
+  /** Multi-location itinerary, each location has its own hotel list. */
+  @Prop({ type: [Object], default: [] })
+  locations!: LeadLocation[];
+
+  /** Flight details - outbound, inbound, internal connections. */
+  @Prop({ type: [Object], default: [] })
+  flights!: LeadFlight[];
+
+  /** Traveler roster for this lead. */
+  @Prop({ type: [Object], default: [] })
+  travelers!: LeadTraveler[];
+
   @Prop({ type: Boolean, default: false, index: true })
   isDeleted!: boolean;
 
@@ -225,6 +412,5 @@ export class Lead {
 
 export const LeadSchema = SchemaFactory.createForClass(Lead);
 
-// Tenant-scoped query paths.
 LeadSchema.index({ organizationId: 1, status: 1 });
 LeadSchema.index({ organizationId: 1, createdAt: -1 });

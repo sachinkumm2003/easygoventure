@@ -101,6 +101,77 @@ export interface LeadServiceItem {
   snapshotDate?: string;
 }
 
+export const TravelerType = ['ADULT', 'CHILD', 'INFANT'] as const;
+export type TravelerType = (typeof TravelerType)[number];
+
+export const FlightType = ['OUTBOUND', 'INBOUND', 'INTERNAL'] as const;
+export type FlightType = (typeof FlightType)[number];
+
+export const FlightClass = ['ECONOMY', 'BUSINESS', 'FIRST'] as const;
+export type FlightClass = (typeof FlightClass)[number];
+
+export interface LeadHotel {
+  hotelId?: string;
+  hotelName: string;
+  roomType?: string;
+  mealPlan?: string;
+  checkIn?: string;
+  checkOut?: string;
+  nights?: number;
+  roomCount?: number;
+  rating?: number;
+  pricePerNight?: number;
+  totalPrice?: number;
+  currency?: string;
+  notes?: string;
+}
+
+export interface LeadLocation {
+  locationId: string;
+  city: string;
+  country?: string;
+  nights?: number;
+  checkIn?: string;
+  checkOut?: string;
+  hotels: LeadHotel[];
+}
+
+export interface LeadFlight {
+  flightId: string;
+  type: FlightType;
+  airline?: string;
+  flightNo?: string;
+  from?: string;
+  to?: string;
+  date?: string;
+  departureTime?: string;
+  arrivalDate?: string;
+  arrivalTime?: string;
+  flightClass?: FlightClass;
+  pricePerPerson?: number;
+  totalPrice?: number;
+  currency?: string;
+  notes?: string;
+}
+
+export interface LeadTraveler {
+  travelerId: string;
+  type: TravelerType;
+  firstName?: string;
+  lastName?: string;
+  nationality?: string;
+  passportNo?: string;
+  dob?: string;
+  notes?: string;
+}
+
+export interface BrainConfig {
+  section: string;
+  label?: string;
+  prompt: string;
+  updatedAt?: string;
+}
+
 export interface Lead {
   id: string;
   name: string;
@@ -110,6 +181,8 @@ export interface Lead {
   source: LeadSource;
   inquiryType: InquiryType;
   status: LeadStatus;
+  startDate?: string;
+  endDate?: string;
   notes?: string;
   rawInquiry?: string;
   // Inquiry requirements (the working brief)
@@ -134,6 +207,9 @@ export interface Lead {
   quoteValidityHours?: number;
   // Internal tracking
   preparedBy?: string;
+  locations: LeadLocation[];
+  flights: LeadFlight[];
+  travelers: LeadTraveler[];
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
@@ -153,6 +229,7 @@ export const LeadActivityType = [
   'FOLLOW_UP_COMPLETED',
   'FULFILLMENT_CREATED',
   'FULFILLMENT_UPDATED',
+  'WHATSAPP_MESSAGE',
 ] as const;
 export type LeadActivityType = (typeof LeadActivityType)[number];
 
@@ -179,7 +256,7 @@ export const ProposalStatus = [
 ] as const;
 export type ProposalStatus = (typeof ProposalStatus)[number];
 
-/** Operational (booking) lifecycle — Phase 2.1 / Phase 3. Runs alongside sales `status`. */
+/** Operational (booking) lifecycle - Phase 2.1 / Phase 3. Runs alongside sales `status`. */
 export const ProposalBookingStatus = [
   'NOT_READY',
   'READY_FOR_BOOKING',

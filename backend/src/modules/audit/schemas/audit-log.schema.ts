@@ -5,7 +5,7 @@ import { baseSchemaOptions } from '../../../common/database/schema-options';
 export type AuditLogDocument = HydratedDocument<AuditLog>;
 
 /**
- * AuditLog — an append-only record of every consequential write in the platform.
+ * AuditLog - an append-only record of every consequential write in the platform.
  *
  * This generalizes the per-lead activity-timeline pattern to a tenant-wide,
  * immutable trail. Records are never updated or deleted (no soft-delete fields).

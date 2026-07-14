@@ -1,12 +1,12 @@
 /**
- * Currency normalization — the platform reports every monetary value in USD ($).
+ * Currency normalization - the platform reports every monetary value in USD ($).
  *
  * Records may still store amounts in their native currency (legacy AED data,
  * INR-denominated vendor rates, etc.). These helpers convert any such amount to
  * USD so services, aggregations and exports speak a single currency. New records
  * default to USD (see the schema/DTO defaults), so conversion is a no-op for them.
  *
- * Rates are static, indicative mid-market approximations — intentionally simple
+ * Rates are static, indicative mid-market approximations - intentionally simple
  * and dependency-free. If live FX ever matters, swap `USD_RATES` for a provider
  * lookup; every call site already funnels through `toUsd`.
  */

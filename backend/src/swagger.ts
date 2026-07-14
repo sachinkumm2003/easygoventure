@@ -8,7 +8,7 @@ export function setupSwagger(app: INestApplication, apiPrefix: string): void {
   const config = new DocumentBuilder()
     .setTitle('DMC CRM API')
     .setDescription(
-      'B2B Travel Operations CRM — REST API.\n\n' +
+      'B2B Travel Operations CRM - REST API.\n\n' +
         `All endpoints are served under \`/${apiPrefix}/v1\`. ` +
         'Every response uses the envelope `{ success, data, message, timestamp }`; ' +
         'paginated endpoints return `data: { items, meta }`.',

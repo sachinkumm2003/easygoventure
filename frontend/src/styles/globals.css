@@ -5,7 +5,7 @@
 
 @layer base {
   /*
-   * Sage Luxury design system — boutique travel palette.
+   * Sage Luxury design system - boutique travel palette.
    * Every colour is a semantic token (HSL "H S% L%"); components reference them
    * via hsl(var(--token)), so the theme is defined entirely here.
    *   Primary #3F6F63 · Secondary #5F8E83 · Pink #E9A7A2 · Light pink #F5D9D5

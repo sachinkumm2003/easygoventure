@@ -6,7 +6,7 @@ import { PermissionScope } from '../../auth/rbac/permissions';
 export type RoleDocument = HydratedDocument<Role>;
 
 /**
- * Role — a named bundle of permission keys.
+ * Role - a named bundle of permission keys.
  *
  * - System roles (`isSystem: true`, `organizationId: null`) are seeded templates
  *   shared across tenants and cannot be deleted.

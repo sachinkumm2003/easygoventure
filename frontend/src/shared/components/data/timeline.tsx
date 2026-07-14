@@ -3,6 +3,7 @@ import {
   CheckCircle2,
   FileText,
   Flag,
+  MessageSquare,
   PencilLine,
   PhoneCall,
   Plus,
@@ -29,6 +30,7 @@ const ICONS: Record<LeadActivityType, { icon: LucideIcon; tone: string }> = {
   FOLLOW_UP_COMPLETED: { icon: CheckCircle2, tone: 'text-success bg-success/10' },
   FULFILLMENT_CREATED: { icon: Plus, tone: 'text-primary bg-primary/10' },
   FULFILLMENT_UPDATED: { icon: Activity, tone: 'text-info bg-info/10' },
+  WHATSAPP_MESSAGE: { icon: MessageSquare, tone: 'text-green-600 bg-green-50 dark:bg-green-950/30' },
 };
 
 export function Timeline({ activities }: { activities: LeadActivity[] }) {
@@ -38,6 +40,7 @@ export function Timeline({ activities }: { activities: LeadActivity[] }) {
         const conf = ICONS[activity.type] ?? { icon: Activity, tone: 'text-muted-foreground bg-muted' };
         const Icon = conf.icon;
         const isLast = index === activities.length - 1;
+        const isWhatsApp = activity.type === 'WHATSAPP_MESSAGE';
         return (
           <li key={activity.id} className="relative flex gap-3 pb-4">
             {!isLast && (
@@ -52,7 +55,18 @@ export function Timeline({ activities }: { activities: LeadActivity[] }) {
               <Icon className="size-4" />
             </span>
             <div className="min-w-0 flex-1 pt-1">
-              <p className="text-sm text-foreground">{activity.description}</p>
+              {isWhatsApp ? (
+                <div className="rounded-lg border border-green-200 bg-[#e9fbe9] dark:border-green-800 dark:bg-green-950/20 px-3 py-2">
+                  <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-green-700 dark:text-green-400">
+                    WhatsApp
+                  </p>
+                  <p className="whitespace-pre-wrap text-sm text-foreground leading-relaxed">
+                    {activity.description}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm text-foreground">{activity.description}</p>
+              )}
               <p className="mt-0.5 text-xs text-muted-foreground">
                 {formatRelative(activity.createdAt)}
               </p>

@@ -15,7 +15,7 @@ import { ApprovalDecisionDto } from './dto/copilot/approval-decision.dto';
 import { ExecutedActionDto } from './dto/copilot/executed-action.dto';
 
 /**
- * AI Copilot infrastructure — conversational memory, recommendations, approvals
+ * AI Copilot infrastructure - conversational memory, recommendations, approvals
  * and execution history. Shares the `ai` path with the legacy stateless endpoints
  * (different sub-paths, so nothing collides). Human approval is mandatory and the
  * backend performs no autonomous writes.

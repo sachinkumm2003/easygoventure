@@ -30,7 +30,7 @@ export function ForbiddenPage() {
     <div className="flex min-h-[60vh] items-center justify-center">
       <EmptyState
         icon={ShieldX}
-        title="403 — Access denied"
+        title="403 - Access denied"
         description="You don't have permission to view this page. Ask an administrator if you need access."
       />
     </div>

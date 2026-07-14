@@ -1,5 +1,5 @@
 /**
- * Permission catalog — the single source of truth for authority in the platform.
+ * Permission catalog - the single source of truth for authority in the platform.
  *
  * Authorization is PERMISSION-DRIVEN, not role-driven: guards check permission
  * keys, and roles are merely named bundles of these keys (see system-roles.ts).

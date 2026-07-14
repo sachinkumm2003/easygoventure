@@ -26,7 +26,7 @@ export class ChatTurnDto {
 
 export class ChatDto {
   @ApiProperty({
-    example: 'A UK agent wants a 5-day Dubai package for 2 adults — what should I include?',
+    example: 'A UK agent wants a 5-day Dubai package for 2 adults - what should I include?',
     description: 'The agent’s question or instruction for the assistant.',
   })
   @IsString()

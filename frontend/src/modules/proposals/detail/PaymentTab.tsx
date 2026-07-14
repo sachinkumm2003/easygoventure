@@ -24,7 +24,7 @@ interface Txn {
 }
 
 /**
- * Dummy payment module — FRONTEND ONLY, no gateway and no backend writes.
+ * Dummy payment module - FRONTEND ONLY, no gateway and no backend writes.
  * Everything here is local demo state to convey billing realism.
  */
 export function PaymentTab({
@@ -68,7 +68,7 @@ export function PaymentTab({
     <div className="space-y-4">
       <div className="flex items-center gap-2 rounded-lg border border-info/30 bg-info/10 px-3 py-2 text-sm text-info">
         <BadgeInfo className="size-4 shrink-0" />
-        <span>Demo Mode — no real payment is processed and nothing is stored on the server.</span>
+        <span>Demo Mode - no real payment is processed and nothing is stored on the server.</span>
       </div>
 
       <Card className="p-5">
@@ -128,7 +128,7 @@ export function PaymentTab({
 
       <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <Badge tone="neutral">Demo</Badge>
-        Presentation layer only — integrate a real gateway (Stripe/Telr) in a later phase.
+        Presentation layer only - integrate a real gateway (Stripe/Telr) in a later phase.
       </p>
     </div>
   );

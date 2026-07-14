@@ -10,7 +10,7 @@ const TONE_CLASSES: Record<Tone, string> = {
   warning: 'bg-warning/15 text-warning-strong ring-warning/30',
   danger: 'bg-danger/12 text-danger-strong ring-danger/25',
   primary: 'bg-primary/10 text-primary ring-primary/20',
-  // Sage green — inquiries. Pink — leads. Dark text keeps WCAG contrast on the soft tints.
+  // Sage green - inquiries. Pink - leads. Dark text keeps WCAG contrast on the soft tints.
   sage: 'bg-secondary/15 text-primary ring-secondary/30',
   pink: 'bg-pink/25 text-foreground ring-pink/45',
 };

@@ -143,7 +143,7 @@ export default function AiPage() {
           <div className="min-w-0">
             <p className="font-semibold text-foreground">AI Workspace</p>
             <p className="truncate text-xs text-muted-foreground">
-              Itineraries · proposals · WhatsApp drafts · visa · research — to capture a customer, use{' '}
+              Itineraries · proposals · WhatsApp drafts · visa · research - to capture a customer, use{' '}
               <Link to={`${ROUTES.leads}?new=1`} className="text-primary hover:underline">
                 Create → Lead
               </Link>
@@ -162,7 +162,7 @@ export default function AiPage() {
               </div>
               <p className="mt-3 text-lg font-semibold text-foreground">How can I help?</p>
               <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-                Itineraries, visa rules, destination advice — ask like you would a senior travel consultant.
+                Itineraries, visa rules, destination advice - ask like you would a senior travel consultant.
               </p>
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 {SUGGESTIONS.map((s) => (
@@ -259,6 +259,6 @@ function persist(key: string, conversations: Conversation[]) {
     const fresh = conversations.filter((c) => c.messages.length > 0 && Date.now() - c.updatedAt < RETENTION_MS);
     localStorage.setItem(key, JSON.stringify(fresh));
   } catch {
-    /* storage full / unavailable — non-fatal */
+    /* storage full / unavailable - non-fatal */
   }
 }

@@ -6,14 +6,14 @@ import { DedupResult, DuplicateCandidate, NormalizedHotel } from './hotel-catalo
  * Stage 4. Collapses records that are unambiguously the same hotel and FLAGS
  * (without merging) records that are only possibly the same.
  *
- * Uniqueness key: slug(name) + '|' + slug(city) — case- and punctuation-insensitive,
+ * Uniqueness key: slug(name) + '|' + slug(city) - case- and punctuation-insensitive,
  * matching the seeder's idempotency key (name + city).
  *
  * Classification:
- *  - EXACT_DUPLICATE  — same key AND same rating -> drop the later occurrence.
- *  - RATING_CONFLICT  — same key but DIFFERENT rating -> keep the first, flag loudly
+ *  - EXACT_DUPLICATE  - same key AND same rating -> drop the later occurrence.
+ *  - RATING_CONFLICT  - same key but DIFFERENT rating -> keep the first, flag loudly
  *                       (a human must decide; e.g. a hotel listed under two tables).
- *  - NEAR_DUPLICATE   — different keys but high name similarity -> keep BOTH, flag
+ *  - NEAR_DUPLICATE   - different keys but high name similarity -> keep BOTH, flag
  *                       for review. We never blindly merge uncertain records.
  */
 export class HotelCatalogDeduplicator {
@@ -58,7 +58,7 @@ export class HotelCatalogDeduplicator {
       }
     }
 
-    // Near-duplicate scan across the surviving unique set (O(n^2) — the catalog is small).
+    // Near-duplicate scan across the surviving unique set (O(n^2) - the catalog is small).
     for (let i = 0; i < unique.length; i += 1) {
       for (let j = i + 1; j < unique.length; j += 1) {
         const a = unique[i];
@@ -71,7 +71,7 @@ export class HotelCatalogDeduplicator {
             kept: a,
             other: b,
             similarity: Number(sim.toFixed(3)),
-            note: `Possible duplicate: "${a.name}" vs "${b.name}" (both kept — review).`,
+            note: `Possible duplicate: "${a.name}" vs "${b.name}" (both kept - review).`,
           });
         }
       }

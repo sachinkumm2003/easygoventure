@@ -5,7 +5,7 @@ import { baseSchemaOptions } from '../../../common/database/schema-options';
 export type SessionDocument = HydratedDocument<Session>;
 
 /**
- * Session — tracks an issued refresh token (device/session).
+ * Session - tracks an issued refresh token (device/session).
  *
  * Only the SHA-256 hash of the refresh token is stored, so a DB leak cannot be
  * replayed. Sessions enable rotation on refresh, remote logout, and device
@@ -40,5 +40,5 @@ export class Session {
 
 export const SessionSchema = SchemaFactory.createForClass(Session);
 
-// TTL — Mongo removes the document once expiresAt passes.
+// TTL - Mongo removes the document once expiresAt passes.
 SessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });

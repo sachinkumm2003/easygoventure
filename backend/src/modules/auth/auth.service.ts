@@ -118,7 +118,7 @@ export class AuthService {
   /**
    * Return the ORGANIZATION_OWNER role id, upserting the system role from its
    * definition if it does not yet exist. Ensures signup always has a role to
-   * assign — a new owner can never end up with `roleIds: []`.
+   * assign - a new owner can never end up with `roleIds: []`.
    */
   private async ensureOwnerRoleId(): Promise<Types.ObjectId> {
     const def = ROLE_DEFINITIONS.find((r) => r.code === SystemRole.ORGANIZATION_OWNER);
@@ -333,7 +333,7 @@ export class AuthService {
 
   private async issueTokens(user: UserDocument, req: Request): Promise<AuthResult> {
     // Signable payload omits the reserved `iat`/`exp` claims (set via expiresIn).
-    // A random `jti` guarantees every issued token is byte-unique — otherwise two
+    // A random `jti` guarantees every issued token is byte-unique - otherwise two
     // logins in the same second produce identical tokens and collide on the
     // session's unique refreshTokenHash index.
     const base: Omit<JwtPayload, 'iat' | 'exp' | 'type'> = {

@@ -35,7 +35,7 @@ export default function FulfillmentsPage() {
   const tableColumns: Column<Fulfillment>[] = [
     { key: 'type', header: 'Type', render: (f) => <span className="font-medium text-foreground">{titleCase(f.type)}</span> },
     { key: 'status', header: 'Status', render: (f) => <StatusBadge status={f.status} tone={fulfillmentTone(f.status)} /> },
-    { key: 'remarks', header: 'Remarks', render: (f) => f.remarks ?? '—' },
+    { key: 'remarks', header: 'Remarks', render: (f) => f.remarks ?? '-' },
     { key: 'due', header: 'Due', render: (f) => formatDate(f.dueDate) },
     {
       key: 'move',
@@ -56,7 +56,7 @@ export default function FulfillmentsPage() {
     <div className="space-y-5">
       <PageHeader
         title="Fulfillments"
-        description="Post-acceptance operations — visas, bookings, transfers"
+        description="Post-acceptance operations - visas, bookings, transfers"
         breadcrumb={[{ label: 'Operations' }, { label: 'Fulfillments' }]}
         actions={
           <div className="flex rounded-md border border-border p-0.5">

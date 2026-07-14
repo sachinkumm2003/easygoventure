@@ -5,11 +5,13 @@ import {
   IsArray,
   IsBoolean,
   IsDate,
+  IsDateString,
   IsEmail,
   IsEnum,
   IsInt,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   Max,
   MaxLength,
@@ -17,7 +19,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { InquiryType, LeadSource, LeadStatus } from '../schemas/lead.schema';
+import { InquiryType, LeadSource, LeadStatus, TravelerType, FlightType, FlightClass } from '../schemas/lead.schema';
 import {
   sanitizeEmail,
   sanitizeName,
@@ -61,6 +63,236 @@ export class LeadHotelOptionDto {
   @IsOptional()
   @IsBoolean()
   recommended?: boolean;
+}
+
+export class LeadHotelDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  hotelId?: string;
+
+  @ApiProperty({ example: 'Atlantis The Palm' })
+  @IsString()
+  @MinLength(1)
+  hotelName!: string;
+
+  @ApiPropertyOptional({ example: 'Deluxe Ocean View' })
+  @IsOptional()
+  @IsString()
+  roomType?: string;
+
+  @ApiPropertyOptional({ example: 'Breakfast Included' })
+  @IsOptional()
+  @IsString()
+  mealPlan?: string;
+
+  @ApiPropertyOptional({ example: '2025-12-15' })
+  @IsOptional()
+  @IsDateString()
+  checkIn?: string;
+
+  @ApiPropertyOptional({ example: '2025-12-18' })
+  @IsOptional()
+  @IsDateString()
+  checkOut?: string;
+
+  @ApiPropertyOptional({ example: 3 })
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  nights?: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  roomCount?: number;
+
+  @ApiPropertyOptional({ example: 5 })
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  rating?: number;
+
+  @ApiPropertyOptional({ example: 350 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  pricePerNight?: number;
+
+  @ApiPropertyOptional({ example: 1050 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  totalPrice?: number;
+
+  @ApiPropertyOptional({ example: 'USD' })
+  @IsOptional()
+  @IsString()
+  currency?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  notes?: string;
+}
+
+export class LeadLocationDto {
+  @ApiProperty({ description: 'Client-generated UUID to key this location' })
+  @IsString()
+  locationId!: string;
+
+  @ApiProperty({ example: 'Dubai' })
+  @IsString()
+  @MinLength(1)
+  city!: string;
+
+  @ApiPropertyOptional({ example: 'UAE' })
+  @IsOptional()
+  @IsString()
+  country?: string;
+
+  @ApiPropertyOptional({ example: 4 })
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  nights?: number;
+
+  @ApiPropertyOptional({ example: '2025-12-15' })
+  @IsOptional()
+  @IsDateString()
+  checkIn?: string;
+
+  @ApiPropertyOptional({ example: '2025-12-19' })
+  @IsOptional()
+  @IsDateString()
+  checkOut?: string;
+
+  @ApiPropertyOptional({ type: [LeadHotelDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LeadHotelDto)
+  hotels?: LeadHotelDto[];
+}
+
+export class LeadFlightDto {
+  @ApiProperty({ description: 'Client-generated UUID' })
+  @IsString()
+  flightId!: string;
+
+  @ApiPropertyOptional({ enum: FlightType, default: FlightType.OUTBOUND })
+  @IsOptional()
+  @IsEnum(FlightType)
+  type?: FlightType;
+
+  @ApiPropertyOptional({ example: 'Emirates' })
+  @IsOptional()
+  @IsString()
+  airline?: string;
+
+  @ApiPropertyOptional({ example: 'EK203' })
+  @IsOptional()
+  @IsString()
+  flightNo?: string;
+
+  @ApiPropertyOptional({ example: 'LHR' })
+  @IsOptional()
+  @IsString()
+  from?: string;
+
+  @ApiPropertyOptional({ example: 'DXB' })
+  @IsOptional()
+  @IsString()
+  to?: string;
+
+  @ApiPropertyOptional({ example: '2025-12-15' })
+  @IsOptional()
+  @IsDateString()
+  date?: string;
+
+  @ApiPropertyOptional({ example: '08:30' })
+  @IsOptional()
+  @IsString()
+  departureTime?: string;
+
+  @ApiPropertyOptional({ example: '2025-12-15' })
+  @IsOptional()
+  @IsDateString()
+  arrivalDate?: string;
+
+  @ApiPropertyOptional({ example: '19:45' })
+  @IsOptional()
+  @IsString()
+  arrivalTime?: string;
+
+  @ApiPropertyOptional({ enum: FlightClass, default: FlightClass.ECONOMY })
+  @IsOptional()
+  @IsEnum(FlightClass)
+  flightClass?: FlightClass;
+
+  @ApiPropertyOptional({ example: 750 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  pricePerPerson?: number;
+
+  @ApiPropertyOptional({ example: 1500 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  totalPrice?: number;
+
+  @ApiPropertyOptional({ example: 'USD' })
+  @IsOptional()
+  @IsString()
+  currency?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  notes?: string;
+}
+
+export class LeadTravelerDto {
+  @ApiProperty({ description: 'Client-generated UUID' })
+  @IsString()
+  travelerId!: string;
+
+  @ApiPropertyOptional({ enum: TravelerType, default: TravelerType.ADULT })
+  @IsOptional()
+  @IsEnum(TravelerType)
+  type?: TravelerType;
+
+  @ApiPropertyOptional({ example: 'Ahmed' })
+  @IsOptional()
+  @IsString()
+  firstName?: string;
+
+  @ApiPropertyOptional({ example: 'Khan' })
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+
+  @ApiPropertyOptional({ example: 'Indian' })
+  @IsOptional()
+  @IsString()
+  nationality?: string;
+
+  @ApiPropertyOptional({ example: 'A1234567' })
+  @IsOptional()
+  @IsString()
+  passportNo?: string;
+
+  @ApiPropertyOptional({ example: '1990-01-15' })
+  @IsOptional()
+  @IsDateString()
+  dob?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }
 
 /** A catalog service attached to a lead — a point-in-time snapshot. */
@@ -163,15 +395,22 @@ export class CreateLeadDto {
   @IsEnum(LeadStatus)
   status?: LeadStatus;
 
+  @ApiPropertyOptional({ example: '2025-12-15', description: 'Overall trip start date' })
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
+
+  @ApiPropertyOptional({ example: '2025-12-22', description: 'Overall trip end date' })
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   notes?: string;
 
-  @ApiPropertyOptional({
-    description: 'Original inbound message the lead was created from',
-    example: 'Hi, I need Dubai visa for 2 adults travelling on 15th July.',
-  })
+  @ApiPropertyOptional({ description: 'Original inbound message the lead was created from' })
   @IsOptional()
   @IsString()
   rawInquiry?: string;
@@ -303,4 +542,25 @@ export class CreateLeadDto {
   @IsString()
   @MaxLength(120)
   preparedBy?: string;
+
+  @ApiPropertyOptional({ type: [LeadLocationDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LeadLocationDto)
+  locations?: LeadLocationDto[];
+
+  @ApiPropertyOptional({ type: [LeadFlightDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LeadFlightDto)
+  flights?: LeadFlightDto[];
+
+  @ApiPropertyOptional({ type: [LeadTravelerDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => LeadTravelerDto)
+  travelers?: LeadTravelerDto[];
 }

@@ -32,7 +32,7 @@ export enum BookingStatus {
 export type BookingDocument = HydratedDocument<Booking>;
 
 /**
- * Booking — a supplier confirmation for one operational line of a booked
+ * Booking - a supplier confirmation for one operational line of a booked
  * proposal. Type-specific operational data lives in an embedded sub-document
  * matching `bookingType` (hotel / transfer / visa); activity & flight bookings
  * use the common fields. Optionally linked to the `FulfillmentItem` it satisfies.

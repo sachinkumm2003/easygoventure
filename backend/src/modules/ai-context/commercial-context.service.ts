@@ -17,11 +17,11 @@ export interface CommercialContext {
 }
 
 /**
- * CommercialContextService — AI INFRASTRUCTURE ONLY.
+ * CommercialContextService - AI INFRASTRUCTURE ONLY.
  *
  * It assembles read-only commercial context (inquiry, package + items, vendor
  * rates, margin, quotation snapshot) for future AI workflows. It performs no
- * pricing, no writes, no approvals — human approval remains mandatory and the
+ * pricing, no writes, no approvals - human approval remains mandatory and the
  * existing AI behavior is unchanged.
  */
 @Injectable()
@@ -48,7 +48,7 @@ export class CommercialContextService {
       notes: inquiry.notes,
     };
     const summary =
-      `Inquiry ${inquiry.referenceNo} (${inquiry.status}) — ${inquiry.customerName}` +
+      `Inquiry ${inquiry.referenceNo} (${inquiry.status}) - ${inquiry.customerName}` +
       `${inquiry.destination ? ` to ${inquiry.destination}` : ''}` +
       `${inquiry.travelers ? `, ${inquiry.travelers} pax` : ''}` +
       `${inquiry.budget ? `, budget ${inquiry.budget}` : ''}.`;
@@ -96,7 +96,7 @@ export class CommercialContextService {
       items: lines,
     };
     const summary =
-      `Package "${pkg.name}" (${pkg.status}) — ${items.length} item(s), ` +
+      `Package "${pkg.name}" (${pkg.status}) - ${items.length} item(s), ` +
       `cost ${pkg.currency} ${pkg.totalCost}, sell ${pkg.currency} ${pkg.totalSellPrice}, ` +
       `expected profit ${pkg.currency} ${pkg.expectedProfit} (${marginPercent}% margin).`;
     return { type: 'package', summary, data };
@@ -114,7 +114,7 @@ export class CommercialContextService {
       snapshot: quotation.snapshot,
     };
     const summary =
-      `Quotation ${quotation.quotationNumber} v${quotation.version} (${quotation.status}) — ` +
+      `Quotation ${quotation.quotationNumber} v${quotation.version} (${quotation.status}) - ` +
       `customer price ${quotation.currency} ${quotation.customerPrice}, ` +
       `expected profit ${quotation.currency} ${quotation.snapshot.expectedProfit}.`;
     return { type: 'quotation', summary, data };

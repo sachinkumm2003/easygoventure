@@ -46,7 +46,7 @@ export class HotelsService {
     if (this.isDatabaseAvailable()) {
       try {
         if (!Types.ObjectId.isValid(id)) {
-          // A file-catalog id is not a Mongo ObjectId — try the fallback below.
+          // A file-catalog id is not a Mongo ObjectId - try the fallback below.
           if (this.catalog.isLoaded() && this.catalog.getById(id)) {
             return this.findByIdFromFile(id);
           }

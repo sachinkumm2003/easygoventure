@@ -29,7 +29,7 @@ export function useCheckReadiness() {
       void qc.invalidateQueries({ queryKey: queryKeys.proposals.detail(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.operations.risk(id) });
       toast[res.ready ? 'success' : 'message'](
-        res.ready ? 'Proposal is ready for booking' : `Not ready — ${res.issues.length} issue(s)`,
+        res.ready ? 'Proposal is ready for booking' : `Not ready - ${res.issues.length} issue(s)`,
       );
     },
     onError,
@@ -44,7 +44,7 @@ export function useBookProposal() {
       void qc.invalidateQueries({ queryKey: queryKeys.proposals.detail(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.operations.bookings(id) });
       void qc.invalidateQueries({ queryKey: queryKeys.operations.dashboard });
-      toast.success('Proposal booked — fulfillment items generated');
+      toast.success('Proposal booked - fulfillment items generated');
     },
     onError,
   });

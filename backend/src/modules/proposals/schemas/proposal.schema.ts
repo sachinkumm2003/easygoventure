@@ -24,7 +24,7 @@ export enum ProposalStatus {
 }
 
 /**
- * Operational (booking) lifecycle — added in Phase 2.1. Runs alongside the sales
+ * Operational (booking) lifecycle - added in Phase 2.1. Runs alongside the sales
  * `status`; a converted proposal is `status: ACCEPTED` (commercial) and advances
  * its `bookingStatus` through the operational stages.
  */

@@ -10,7 +10,7 @@ export enum AiApprovalDecision {
 export type AiApprovalDocument = HydratedDocument<AiApproval>;
 
 /**
- * AiApproval — an immutable record of a human decision on an AI action. This is
+ * AiApproval - an immutable record of a human decision on an AI action. This is
  * the audit spine of the human-in-the-loop guarantee: every executed action is
  * traceable to an APPROVED decision and the user who made it.
  */

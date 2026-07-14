@@ -2,7 +2,7 @@ import 'dotenv/config';
 import mongoose, { Schema } from 'mongoose';
 
 /**
- * Idempotent baseline seed — RBAC roles only.
+ * Idempotent baseline seed - RBAC roles only.
  * No demo/business data: this just guarantees the role documents the auth layer expects.
  *
  * Run with: `npm run seed`

@@ -5,7 +5,7 @@ import { baseSchemaOptions } from '../../../common/database/schema-options';
 /**
  * Lifecycle of an AI-recommended action. Human approval is MANDATORY: an action
  * can never move to EXECUTED without an APPROVED decision first. The backend
- * never performs autonomous writes — it records the lifecycle only.
+ * never performs autonomous writes - it records the lifecycle only.
  */
 export enum AiActionStatus {
   RECOMMENDED = 'RECOMMENDED',

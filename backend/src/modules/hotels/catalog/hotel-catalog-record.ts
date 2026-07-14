@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
  * HotelCatalogRecord
  * ------------------
  * The file-based, environment-independent hotel catalog contract. This is the
- * shape persisted to `assets/catalog/hotels/dubai.hotels.json` — the single
+ * shape persisted to `assets/catalog/hotels/dubai.hotels.json` - the single
  * source of truth consumed by both the database seeder and the runtime JSON
  * fallback. It is intentionally minimal and transport-agnostic (no database
  * concepts like `_id`, `isDeleted`, timestamps).
@@ -71,7 +71,7 @@ export function validateHotelCatalogRecord(value: unknown): { valid: boolean; re
 
 /**
  * Split a raw JSON array into cleaned valid records and rejected rows. Never
- * throws on a bad row — invalid records are collected as issues so a single
+ * throws on a bad row - invalid records are collected as issues so a single
  * malformed entry can't take down the whole catalog.
  */
 export function parseHotelCatalog(raw: unknown): {
@@ -103,7 +103,7 @@ export function parseHotelCatalog(raw: unknown): {
 }
 
 // The backend root, resolved relative to this compiled module. Works from both
-// `src/**` (ts-node) and `dist/**` (nest build) — both sit four levels deep.
+// `src/**` (ts-node) and `dist/**` (nest build) - both sit four levels deep.
 const BACKEND_ROOT = resolve(__dirname, '../../../..');
 
 /** Canonical location of the file-based hotel catalog. */

@@ -1,4 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/auth.types';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RequirePermissions } from '../auth/decorators/require-permissions.decorator';
 import { PERMISSIONS } from '../auth/rbac/permissions';
@@ -12,6 +14,8 @@ import { ProposalSummaryDto } from './dto/proposal-summary.dto';
 import { ChatDto } from './dto/chat.dto';
 import { NextActionDto } from './dto/next-action.dto';
 import { ProposalDraftDto } from './dto/proposal-draft.dto';
+import { LeadChatDto } from './dto/lead-chat.dto';
+import { LeadIntakeChatDto } from './dto/lead-intake-chat.dto';
 import {
   ChatResponseDto,
   FollowupSuggestionResponseDto,
@@ -72,5 +76,20 @@ export class AIController {
   async proposalDraft(@Body() dto: ProposalDraftDto) {
     const result = await this.aiService.proposalDraft(dto);
     return new ApiResponse(result, 'Proposal drafted');
+  }
+
+  @Post('lead-chat')
+  @ApiOperation({ summary: 'Lead-specific AI chat (uses brain prompt + full lead context)' })
+  @ApiStandardResponse(ChatResponseDto)
+  async leadChat(@Body() dto: LeadChatDto, @CurrentUser() user: AuthenticatedUser) {
+    const result = await this.aiService.leadChat(dto, user);
+    return new ApiResponse(result, 'Reply generated');
+  }
+
+  @Post('lead-intake-chat')
+  @ApiOperation({ summary: 'Conversational lead intake - AI gathers missing fields via chat' })
+  async leadIntakeChat(@Body() dto: LeadIntakeChatDto, @CurrentUser() user: AuthenticatedUser) {
+    const result = await this.aiService.leadIntakeChat(dto, user);
+    return new ApiResponse(result, 'Lead intake reply generated');
   }
 }

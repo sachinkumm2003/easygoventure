@@ -12,7 +12,7 @@ export enum UserStatus {
 export type UserDocument = HydratedDocument<User>;
 
 /**
- * User — an authenticatable account.
+ * User - an authenticatable account.
  *
  * Tenant-scoped via `organizationId` (null only for the platform SUPER_ADMIN).
  * Effective permissions are the union of the user's roles' permissions plus any
@@ -33,7 +33,7 @@ export class User {
   @Prop({ required: true, trim: true, lowercase: true, unique: true, index: true })
   email!: string;
 
-  /** scrypt hash — never exposed over the API. */
+  /** scrypt hash - never exposed over the API. */
   @Prop({ required: true, select: false })
   passwordHash!: string;
 

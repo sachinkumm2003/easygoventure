@@ -20,7 +20,7 @@ import {
 const MAX_TOKEN_ATTEMPTS = 5;
 
 /**
- * QuotationConversionService — turns an ACCEPTED quotation into an executable
+ * QuotationConversionService - turns an ACCEPTED quotation into an executable
  * proposal, copying the frozen commercial snapshot (NOT the live package) so the
  * accepted commercial terms are contractual and survive later vendor/rate/package
  * changes. Single-use: a quotation can convert exactly once.
@@ -96,7 +96,7 @@ export class QuotationConversionService {
   }
 
   /**
-   * Resolve the sales chain: package → inquiry → converted lead. Best-effort — a
+   * Resolve the sales chain: package → inquiry → converted lead. Best-effort - a
    * commercial proposal is valid even if the inquiry was never converted to a lead.
    */
   private async resolveLineage(

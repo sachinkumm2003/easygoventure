@@ -22,7 +22,7 @@ import { BookingsController } from './bookings.controller';
 import { OperationsController } from './operations.controller';
 
 /**
- * Operations Engine (Phase 3) — turns a booked proposal into managed real-world
+ * Operations Engine (Phase 3) - turns a booked proposal into managed real-world
  * travel execution: travelers, supplier bookings (hotel/transfer/visa/activity/
  * flight), a derived trip timeline, tenant-scoped dashboards, operational-risk
  * scoring, metadata-only document generation, and read-only AI operations context.

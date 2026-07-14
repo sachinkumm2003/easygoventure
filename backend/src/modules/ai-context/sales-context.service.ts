@@ -5,10 +5,10 @@ import { QuotationsService } from '../quotations/quotations.service';
 import { CommercialContext } from './commercial-context.service';
 
 /**
- * SalesContextProvider — AI INFRASTRUCTURE ONLY. Read-only assembly of the
+ * SalesContextProvider - AI INFRASTRUCTURE ONLY. Read-only assembly of the
  * post-acceptance sales picture (quotation acceptance, proposal readiness,
  * fulfillment progress, commercial lineage) for future AI workflows. No
- * conversion, no acceptance, no writes — human approval remains mandatory.
+ * conversion, no acceptance, no writes - human approval remains mandatory.
  */
 @Injectable()
 export class SalesContextService {
@@ -55,7 +55,7 @@ export class SalesContextService {
     };
 
     const summary =
-      `Proposal ${proposal.generatedToken} (booking: ${proposal.bookingStatus}) — ` +
+      `Proposal ${proposal.generatedToken} (booking: ${proposal.bookingStatus}) - ` +
       `accepted price ${proposal.currency} ${proposal.acceptedPrice ?? proposal.amount}, ` +
       `${readiness.ready ? 'ready for booking' : `not ready (${readiness.issues.length} issue(s))`}, ` +
       `${items.length} fulfillment item(s).`;

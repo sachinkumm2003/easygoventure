@@ -5,7 +5,7 @@ import { RawHotelRecord } from './hotel-catalog.types';
  * HotelCatalogParser
  * ------------------
  * Stage 1 of the pipeline. Reads the raw asset and extracts one untrusted
- * {@link RawHotelRecord} per hotel row. It makes NO cleaning decisions — its only
+ * {@link RawHotelRecord} per hotel row. It makes NO cleaning decisions - its only
  * job is to faithfully pull `rawName`, `rawArea`, and the star-rating section each
  * row belongs to, so later stages have a stable, traceable input.
  *
@@ -59,7 +59,7 @@ export class HotelCatalogParser {
           sourceRow: records.length + 1,
         });
       } else {
-        // Paragraph — may be a star-rating section heading.
+        // Paragraph - may be a star-rating section heading.
         const text = this.cellText(chunk);
         if (text && this.looksLikeRatingHeading(text)) {
           currentRating = text;

@@ -203,7 +203,7 @@ export class AiCopilotService {
   /**
    * Mark an APPROVED action as executed. Execution itself is performed by the
    * client via the existing CRM mutations (human-in-the-loop); the backend never
-   * writes autonomously — it only records that the approved action was carried out.
+   * writes autonomously - it only records that the approved action was carried out.
    */
   async markExecuted(id: string, dto: ExecutedActionDto, user: AuthenticatedUser): Promise<AiActionDocument> {
     const action = await this.getActionOrThrow(id, user);

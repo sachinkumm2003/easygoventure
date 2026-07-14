@@ -5,7 +5,7 @@ import { baseSchemaOptions } from '../../../common/database/schema-options';
 export type PasswordResetDocument = HydratedDocument<PasswordReset>;
 
 /**
- * PasswordReset — a single-use, time-boxed password-reset grant.
+ * PasswordReset - a single-use, time-boxed password-reset grant.
  *
  * Stores only the token hash. The raw token is delivered to the user (email
  * delivery is a later phase; in Phase 1 the token is returned/logged) and
@@ -28,5 +28,5 @@ export class PasswordReset {
 
 export const PasswordResetSchema = SchemaFactory.createForClass(PasswordReset);
 
-// TTL — Mongo removes the document once expiresAt passes.
+// TTL - Mongo removes the document once expiresAt passes.
 PasswordResetSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });

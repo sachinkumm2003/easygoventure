@@ -239,8 +239,8 @@ export class PackagesService {
 
   /**
    * A package can be re-costed until it is ARCHIVED. Re-costing a QUOTED package
-   * is allowed (it does not alter existing quotations — those are immutable
-   * snapshots — it just lets the consultant produce a new quotation version).
+   * is allowed (it does not alter existing quotations - those are immutable
+   * snapshots - it just lets the consultant produce a new quotation version).
    */
   private async assertMutablePackage(packageId: string, user: AuthenticatedUser): Promise<PackageDocument> {
     const pkg = await this.findByIdOrThrow(packageId, user);

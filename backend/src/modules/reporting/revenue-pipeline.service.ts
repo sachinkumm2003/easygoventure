@@ -19,7 +19,7 @@ export interface RevenuePipelineMetrics {
 }
 
 /**
- * RevenuePipelineService — tenant-scoped commercial pipeline metrics. Read-only
+ * RevenuePipelineService - tenant-scoped commercial pipeline metrics. Read-only
  * roll-up across inquiries, packages, quotations, proposals and fulfillment items.
  */
 @Injectable()

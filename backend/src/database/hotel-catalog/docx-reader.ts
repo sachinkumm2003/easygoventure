@@ -11,7 +11,7 @@ import { inflateRawSync } from 'node:zlib';
  * of native/runtime dependencies (the cleaned JSON it produces is what the app
  * actually consumes at runtime).
  *
- * The parser is intentionally strict and well-commented — it only supports the
+ * The parser is intentionally strict and well-commented - it only supports the
  * two things Office ever emits: STORED (0) and DEFLATE (8).
  */
 

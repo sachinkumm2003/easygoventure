@@ -18,7 +18,7 @@ import {
 import { ProposalResponseDto } from './dto/proposal-response.dto';
 
 /**
- * Phase 2.1 commercial proposal endpoints — conversion, booking readiness,
+ * Phase 2.1 commercial proposal endpoints - conversion, booking readiness,
  * fulfillment and lineage. Shares the `/proposals` path with the legacy controller.
  */
 @ApiTags('proposals-commercial')

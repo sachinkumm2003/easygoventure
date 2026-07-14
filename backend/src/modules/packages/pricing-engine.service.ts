@@ -27,7 +27,7 @@ export interface PackageTotals {
 }
 
 /**
- * PricingEngineService — the single source of truth for commercial math.
+ * PricingEngineService - the single source of truth for commercial math.
  *
  * All item and package figures are DERIVED here; nothing is entered manually.
  *

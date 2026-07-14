@@ -13,7 +13,7 @@ export enum DocumentType {
 export type GeneratedDocumentDocument = HydratedDocument<GeneratedDocument>;
 
 /**
- * GeneratedDocument — METADATA ONLY for a generated travel document. The binary
+ * GeneratedDocument - METADATA ONLY for a generated travel document. The binary
  * (PDF) is never stored in MongoDB; we persist provenance (who/when/what), a
  * content hash for integrity, and an optional external `storageRef` (e.g. an S3
  * URI) so the artifact can be regenerated or fetched deterministically.

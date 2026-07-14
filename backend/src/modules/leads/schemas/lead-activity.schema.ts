@@ -16,6 +16,7 @@ export enum LeadActivityType {
   FOLLOW_UP_COMPLETED = 'FOLLOW_UP_COMPLETED',
   FULFILLMENT_CREATED = 'FULFILLMENT_CREATED',
   FULFILLMENT_UPDATED = 'FULFILLMENT_UPDATED',
+  WHATSAPP_MESSAGE = 'WHATSAPP_MESSAGE',
 }
 
 export type LeadActivityDocument = HydratedDocument<LeadActivity>;

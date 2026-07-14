@@ -75,7 +75,7 @@ export default function LoginPage() {
             {justRegistered && !error && (
               <div className="flex items-start gap-2 rounded-lg border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
                 <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
-                <span>Workspace created — sign in with your new credentials.</span>
+                <span>Workspace created - sign in with your new credentials.</span>
               </div>
             )}
             {error && (

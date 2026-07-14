@@ -114,7 +114,7 @@ function ChatPanel() {
             <p className="text-sm text-muted-foreground">
               {aiContext
                 ? 'Ask about the record you have open, or anything travel/DMC related.'
-                : 'Ask about visas, itineraries, packages, transfers, tours — or get help drafting messages and quotations for your DMC enquiries.'}
+                : 'Ask about visas, itineraries, packages, transfers, tours - or get help drafting messages and quotations for your DMC enquiries.'}
             </p>
             <div className="flex flex-col gap-2">
               {suggestions.map((s) => (
@@ -155,6 +155,20 @@ function ChatPanel() {
           </div>
         )}
       </div>
+
+
+      {action && aiContext?.entity && (
+        <ActionCard
+          nextAction={action}
+          leadId={aiContext.entity.id}
+          onDismiss={() => setAction(null)}
+          onApplied={(label) => {
+            setAction(null);
+            setMessages((prev) => [...prev, { role: 'assistant', content: `✅ Done - ${label}` }]);
+          }}
+        />
+      )}
+
 
       <form
         className="mt-3 flex items-end gap-2 border-t border-border pt-3"

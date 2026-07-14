@@ -130,8 +130,8 @@ export function CreateLeadModal({
           <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-4 text-sm">
             <Review label="Name" value={values.name} />
             <Review label="Phone" value={values.phone} />
-            <Review label="Email" value={values.email || '—'} />
-            <Review label="Company" value={values.companyName || '—'} />
+            <Review label="Email" value={values.email || '-'} />
+            <Review label="Company" value={values.companyName || '-'} />
             <Review label="Source" value={titleCase(values.source)} />
             <Review label="Inquiry" value={titleCase(values.inquiryType)} />
             {values.rawInquiry && <Review label="Message" value={values.rawInquiry} />}

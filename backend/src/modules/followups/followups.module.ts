@@ -7,7 +7,7 @@ import { FollowUpsService } from './followups.service';
 import { FollowUpsController } from './followups.controller';
 
 /**
- * Follow-ups — manually scheduled touch-points against a lead. No automation.
+ * Follow-ups - manually scheduled touch-points against a lead. No automation.
  */
 @Module({
   imports: [

@@ -6,7 +6,7 @@ import { PermissionScope } from '../../auth/rbac/permissions';
 export type PermissionDocument = HydratedDocument<Permission>;
 
 /**
- * Permission — a single unit of authority (`resource.action`). This is a GLOBAL
+ * Permission - a single unit of authority (`resource.action`). This is a GLOBAL
  * catalog (seeded from PERMISSION_CATALOG); roles reference these keys. Storing
  * the catalog makes permissions discoverable via API and lets the UI render a
  * permission matrix without hardcoding.

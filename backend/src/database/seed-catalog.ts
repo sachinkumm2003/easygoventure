@@ -22,7 +22,7 @@ import { HotelCatalogSeeder } from './hotel-catalog/hotel-catalog.seeder';
 /**
  * Master catalog seed: `npm run seed:catalog`.
  *
- * Idempotent end-to-end — safe to run repeatedly. Seeds, in order:
+ * Idempotent end-to-end - safe to run repeatedly. Seeds, in order:
  *   1. Permissions (from the permission catalog)
  *   2. Roles (system templates: SUPER_ADMIN, ORGANIZATION_OWNER, business roles…)
  *   3. Service categories (Visa, Hotel, Transfer, Activity, Insurance, Package, Custom)

@@ -78,7 +78,7 @@ const OPS_EXECUTION: PermissionKey[] = [
   P.DOCUMENT_GENERATE,
 ];
 
-/** Every read/view permission — the full surface a read-only auditor may see. */
+/** Every read/view permission - the full surface a read-only auditor may see. */
 const READ_ONLY_BUNDLE: PermissionKey[] = [
   P.ORGANIZATION_READ, P.DEPARTMENT_READ, P.USER_READ, P.ROLE_READ, P.PERMISSION_READ,
   P.INQUIRY_READ, P.LEAD_READ, P.PROPOSAL_READ, P.FOLLOWUP_READ, P.FULFILLMENT_READ,
@@ -103,14 +103,14 @@ export const ROLE_DEFINITIONS: RoleDefinition[] = [
   {
     code: SystemRole.SUPER_ADMIN,
     name: 'Super Admin',
-    description: 'Platform owner — full access across every organization.',
+    description: 'Platform owner - full access across every organization.',
     permissions: [WILDCARD_PERMISSION],
     isSystem: true,
   },
   {
     code: SystemRole.ORGANIZATION_OWNER,
     name: 'Organization Owner',
-    description: 'DMC owner — full authority within the organization.',
+    description: 'DMC owner - full authority within the organization.',
     permissions: [...ALL_PERMISSION_KEYS],
     isSystem: true,
   },

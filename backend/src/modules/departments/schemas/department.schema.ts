@@ -5,7 +5,7 @@ import { baseSchemaOptions } from '../../../common/database/schema-options';
 export type DepartmentDocument = HydratedDocument<Department>;
 
 /**
- * Department — an organizational unit within a tenant (Sales, Operations, Visa…).
+ * Department - an organizational unit within a tenant (Sales, Operations, Visa…).
  * Users belong to a department; department scope can further narrow permissions.
  */
 @Schema({ ...baseSchemaOptions, collection: 'departments' })

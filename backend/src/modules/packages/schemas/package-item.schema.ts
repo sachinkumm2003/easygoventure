@@ -13,7 +13,7 @@ export enum MarkupType {
 export type PackageItemDocument = HydratedDocument<PackageItem>;
 
 /**
- * PackageItem — one priced line inside a Package (a hotel, activity, transfer,
+ * PackageItem - one priced line inside a Package (a hotel, activity, transfer,
  * visa, flight or custom service). The client supplies the cost + markup config;
  * `unitSellPrice`, `totalCost`, `totalSellPrice` and `profit` are DERIVED by the
  * PricingEngine (never entered manually).

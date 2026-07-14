@@ -15,7 +15,7 @@ export class RolesRepository extends TenantScopedRepository<RoleDocument> {
   }
 
   /**
-   * Read by id WITHOUT an org filter, because role visibility is a union — a role
+   * Read by id WITHOUT an org filter, because role visibility is a union - a role
    * is visible if it is a shared system template (organizationId: null) OR belongs
    * to the caller's org. The service applies that union predicate (`isVisibleTo`).
    */

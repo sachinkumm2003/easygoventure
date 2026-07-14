@@ -5,11 +5,15 @@ import {
   HotelRecommendationService,
   type HotelRecommendations,
 } from '../hotels/hotel-recommendation.service';
+import { BrainService } from '../brain/brain.service';
+import type { AuthenticatedUser } from '../auth/auth.types';
 import { ProposalDraftDto } from './dto/proposal-draft.dto';
 import { ParseInquiryDto } from './dto/parse-inquiry.dto';
 import { FollowupSuggestionDto } from './dto/followup-suggestion.dto';
 import { ProposalSummaryDto } from './dto/proposal-summary.dto';
 import { ChatDto } from './dto/chat.dto';
+import { LeadChatDto } from './dto/lead-chat.dto';
+import { LeadIntakeChatDto, type LeadIntakeChatResponse } from './dto/lead-intake-chat.dto';
 import { NextActionDto } from './dto/next-action.dto';
 
 export interface ParsedInquiry {
@@ -92,7 +96,7 @@ const PROPOSAL_TYPES = ['VISA', 'TRAVEL_PACKAGE', 'HOTEL', 'CUSTOM'];
  * Company (DMC) selling to travel agencies.
  */
 const DMC_ASSISTANT_PERSONA =
-  'You are the AI operations assistant for a Destination Management Company (DMC) — ' +
+  'You are the AI operations assistant for a Destination Management Company (DMC) - ' +
   'a B2B travel wholesaler that arranges visas, hotels, airport transfers, tours & ' +
   'activities (e.g. desert safari, city tours, theme parks, yacht cruises) and holiday ' +
   'packages for travel agencies. You understand destinations, seasons, traveler counts ' +
@@ -103,10 +107,11 @@ export class AIService {
   constructor(
     @Inject(AI_PROVIDER) private readonly provider: AIProvider,
     private readonly hotels: HotelRecommendationService,
+    private readonly brain: BrainService,
   ) {}
 
   /**
-   * Endpoint 6 — generate a customer-facing proposal (Markdown) grounded in the
+   * Endpoint 6 - generate a customer-facing proposal (Markdown) grounded in the
    * real hotel catalog. Uses destination/budget/travellers/dates to pull ranked
    * hotel recommendations, then drafts hotels + activities + transfers + visa.
    */
@@ -120,7 +125,7 @@ export class AIService {
       nights: dto.nights,
     });
     const hotelLines = recommendations.tiers
-      .flatMap((t) => t.hotels.map((h) => `- [${t.tier}] ${h.name} — ${h.rating}-star, ${h.location}`))
+      .flatMap((t) => t.hotels.map((h) => `- [${t.tier}] ${h.name} - ${h.rating}-star, ${h.location}`))
       .join('\n');
 
     const messages: ChatMessage[] = [
@@ -145,7 +150,7 @@ export class AIService {
           `Budget: ${recommendations.budget ?? 'not specified'}\n` +
           `Suggested tier: ${recommendations.suggestedTier ?? 'n/a'}\n` +
           `Travel date: ${dto.travelDate ?? 'n/a'}\n\nRecommended hotels to include:\n` +
-          (hotelLines || '(no catalog matches — suggest suitable hotel categories generically)'),
+          (hotelLines || '(no catalog matches - suggest suitable hotel categories generically)'),
       },
     ];
 
@@ -153,7 +158,7 @@ export class AIService {
     return { proposal, recommendations };
   }
 
-  /** Endpoint 1 — extract structured fields from a free-text inquiry. */
+  /** Endpoint 1 - extract structured fields from a free-text inquiry. */
   async parseInquiry(dto: ParseInquiryDto): Promise<ParsedInquiry> {
     const messages: ChatMessage[] = [
       {
@@ -175,7 +180,7 @@ export class AIService {
           '"Dolphin Show at Dubai Dolphinarium"]. Include named inclusions like "Daily Breakfast" and ' +
           '"Accommodation". Do not merge, summarise or omit lines; empty array if none stated), ' +
           'adults (number of adults as an integer | null), children (number of children | null), ' +
-          'rooms (number of hotel rooms | null), ' +
+          'rooms (number of hotel rooms | null), '
           'travelers (total head count as an integer, summing adults and children | null), ' +
           'travelDate (ISO date YYYY-MM-DD | null; when a date has no year use the next future ' +
           'occurrence, never a past date, and pick the start/departure date for a range), ' +
@@ -250,7 +255,7 @@ export class AIService {
     return { ...result, confidence, missing };
   }
 
-  /** Endpoint 2 — suggest a follow-up message for a lead. */
+  /** Endpoint 2 - suggest a follow-up message for a lead. */
   async followupSuggestion(dto: FollowupSuggestionDto): Promise<{ message: string }> {
     const messages: ChatMessage[] = [
       {
@@ -259,7 +264,7 @@ export class AIService {
           `${DMC_ASSISTANT_PERSONA} Write a concise, professional, friendly follow-up ` +
           'message (max 3 sentences) the agent can send to the travel agency about their ' +
           'enquiry. Reference the destination/service where helpful, keep a warm B2B tone, ' +
-          'and end with a clear next step. Return only the message text — no greeting ' +
+          'and end with a clear next step. Return only the message text - no greeting ' +
           'placeholders like "[Name]" and no signature.',
       },
       {
@@ -274,7 +279,7 @@ export class AIService {
     return { message };
   }
 
-  /** Endpoint 3 — turn proposal details into a client-friendly summary. */
+  /** Endpoint 3 - turn proposal details into a client-friendly summary. */
   async proposalSummary(dto: ProposalSummaryDto): Promise<{ summary: string }> {
     const price =
       dto.amount !== undefined ? `${dto.currency ?? 'USD'} ${dto.amount}` : 'on request';
@@ -284,7 +289,7 @@ export class AIService {
         content:
           `${DMC_ASSISTANT_PERSONA} Write a clear, persuasive, client-friendly summary of ` +
           'the proposal (max 4 sentences) that the agency can forward to the traveler. ' +
-          'Highlight the destination, what is included, and the value — keep it factual, ' +
+          'Highlight the destination, what is included, and the value - keep it factual, ' +
           'do not invent inclusions or prices that are not provided. Return only the summary.',
       },
       {
@@ -299,7 +304,7 @@ export class AIService {
     return { summary };
   }
 
-  /** Endpoint 4 — free-form conversational assistant for DMC operations. */
+  /** Endpoint 4 - free-form conversational assistant for DMC operations. */
   async chat(dto: ChatDto): Promise<{ reply: string }> {
     const messages: ChatMessage[] = [
       {
@@ -313,12 +318,12 @@ export class AIService {
           'also a CRM copilot: you CAN help capture leads. When a message contains customer ' +
           'details (name, phone, email, destination, dates, pax, budget), extract them, point ' +
           'out what is still missing, and tell the agent they can create the lead and its ' +
-          'inquiry in one step via "Create → Lead" (AI Assisted) by pasting the message — ' +
+          'inquiry in one step via "Create → Lead" (AI Assisted) by pasting the message - ' +
           'NEVER reply that you cannot create leads or that this is outside your ability. Be ' +
           'accurate, concise and practical; use short paragraphs or bullet points. When a ' +
           'request is missing key details (destination, dates, nationality, pax, budget), ' +
           'ask a brief clarifying question. Do not invent specific prices, availability or ' +
-          'visa approvals — describe typical ranges/processes and flag when live confirmation ' +
+          'visa approvals - describe typical ranges/processes and flag when live confirmation ' +
           'is needed. Stay within travel/DMC topics.',
       },
       ...(dto.context
@@ -340,7 +345,7 @@ export class AIService {
     return { reply };
   }
 
-  /** Endpoint 5 — recommend the single best next action for the current lead. */
+  /** Endpoint 5 - recommend the single best next action for the current lead. */
   async nextAction(dto: NextActionDto): Promise<NextAction> {
     const messages: ChatMessage[] = [
       {
@@ -355,7 +360,7 @@ export class AIService {
           'add_note → note; update_status → status (one of NEW, QUOTE_SENT, ' +
           'FOLLOW_UP, CONFIRMED, ARRANGEMENTS, VOUCHER_SENT, COMPLETED, REJECTED); create_proposal → ' +
           'title, proposalType (VISA | TRAVEL_PACKAGE | HOTEL | CUSTOM), amount (number, ' +
-          'optional — omit if unknown, never guess a price), currency (default USD), ' +
+          'optional - omit if unknown, never guess a price), currency (default USD), ' +
           'description. Prefer a follow-up or note unless a proposal is clearly the next ' +
           'step. Use "none" if nothing is needed.',
       },
@@ -369,6 +374,122 @@ export class AIService {
       maxTokens: 700,
     });
     return this.normalizeNextAction(this.parseJson(raw));
+  }
+
+  /** Lead-specific chat that injects the org's brain prompt for the 'leads' section. */
+  async leadChat(
+    dto: LeadChatDto,
+    actor: AuthenticatedUser,
+  ): Promise<{ reply: string }> {
+    const brainPrompt = await this.brain.getPrompt(actor, 'leads');
+
+    const messages: ChatMessage[] = [
+      {
+        role: 'system',
+        content:
+          `${DMC_ASSISTANT_PERSONA} Today's date is ${this.today()}. You are the dedicated ` +
+          'AI assistant for a specific lead. You have full context about this lead\'s ' +
+          'itinerary (locations, hotels per location), traveler roster, proposals, and ' +
+          'follow-up history. Answer questions, suggest itinerary refinements, recommend ' +
+          'hotels for each location, draft messages to the client, and help build a quote. ' +
+          'Be specific - reference the real locations, hotels, and traveler details from ' +
+          'the context. Never invent prices or availability; flag when live confirmation ' +
+          'is needed.',
+      },
+      ...(brainPrompt.trim()
+        ? [{ role: 'system' as const, content: `Additional instructions:\n${brainPrompt}` }]
+        : []),
+      ...(dto.context
+        ? [
+            {
+              role: 'system' as const,
+              content:
+                'Current lead record (use this to answer specifically):\n\n' + dto.context,
+            },
+          ]
+        : []),
+      ...(dto.history ?? []).map((t) => ({ role: t.role, content: t.content })),
+      { role: 'user' as const, content: dto.message },
+    ];
+
+    const reply = await this.provider.chat(messages, { temperature: 0.5, maxTokens: 1500 });
+    return { reply };
+  }
+
+  /**
+   * Conversational lead intake - the AI gathers missing fields through chat,
+   * updates extracted data each turn, and marks complete when enough info exists.
+   */
+  async leadIntakeChat(
+    dto: LeadIntakeChatDto,
+    actor: AuthenticatedUser,
+  ): Promise<LeadIntakeChatResponse> {
+    const brainPrompt = await this.brain.getPrompt(actor, 'leads');
+    const current = dto.extractedData ?? {};
+
+    const systemPrompt = [
+      `${DMC_ASSISTANT_PERSONA} Today's date is ${this.today()}.`,
+      'You are helping a DMC agent capture a new lead by gathering information through conversation.',
+      'Your job: have a friendly, professional conversation to collect lead details.',
+      'Required fields: full name, phone number.',
+      'Important fields: destination(s), travel dates, number of travelers, budget, inquiry type (visa/hotel/travel package/transfer).',
+      'After each user message, respond helpfully and ask for any missing important info naturally.',
+      'Keep responses short (2-3 sentences max). Be warm and efficient.',
+      '',
+      'CRITICAL: You MUST return valid JSON as your ENTIRE response (no extra text), in this exact format:',
+      '{"reply":"your conversational response","extractedData":{"name":"full name","phone":"+971501234567","email":"","companyName":"","inquiryType":"TRAVEL_PACKAGE","source":"WHATSAPP","destination":"Dubai","startDate":"YYYY-MM-DD","endDate":"YYYY-MM-DD","budget":15000,"travelers":2,"notes":""},"isComplete":false,"missingFields":["phone"],"whatsappGreeting":""}',
+      '',
+      'Rules for extractedData:',
+      '- Merge existing data with anything NEW from this message. Never erase already-extracted fields.',
+      '- name: full name as given. phone: include country code (+971 for UAE etc.).',
+      '- startDate / endDate: ISO date YYYY-MM-DD. If only month/year given, use first day of that month for startDate.',
+      '- If traveler says "7 nights from Dec 15", set startDate=2025-12-15 and endDate=2025-12-22.',
+      '- travelers: total headcount including children. budget: numeric, strip currency symbols.',
+      '- destination: primary city/country, comma-separated if multiple.',
+      '- inquiryType: one of VISA, TRAVEL_PACKAGE, HOTEL, TRANSFER, CUSTOM.',
+      '- source: one of WHATSAPP, EMAIL, MANUAL.',
+      '- Omit/null fields not yet known.',
+      '',
+      'isComplete = true ONLY when BOTH name AND phone are known.',
+      'missingFields: human-readable labels for still-missing fields (from: name, phone, destination, start date, end date, travelers, budget).',
+      'whatsappGreeting: when isComplete=true, generate a warm professional WhatsApp message to send to the client confirming receipt + next steps. Otherwise "".',
+      '',
+      'Current extracted data:',
+      JSON.stringify(current, null, 2),
+      brainPrompt.trim() ? `\nAdditional instructions:\n${brainPrompt}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+    const messages: ChatMessage[] = [
+      { role: 'system', content: systemPrompt },
+      ...(dto.history ?? []).map((t) => ({ role: t.role, content: t.content })),
+      { role: 'user', content: dto.message },
+    ];
+
+    const raw = await this.provider.chat(messages, { temperature: 0.4, maxTokens: 800 });
+
+    let parsed: LeadIntakeChatResponse;
+    try {
+      const jsonStr = raw.trim().replace(/^```json\s*/i, '').replace(/```\s*$/, '');
+      const obj = JSON.parse(jsonStr) as Partial<LeadIntakeChatResponse>;
+      parsed = {
+        reply: this.asString(obj.reply) ?? 'Got it! Could you share more details?',
+        extractedData: { ...current, ...((obj.extractedData as object) ?? {}) },
+        isComplete: Boolean(obj.isComplete),
+        missingFields: Array.isArray(obj.missingFields) ? (obj.missingFields as string[]) : [],
+        whatsappGreeting: this.asString(obj.whatsappGreeting) ?? undefined,
+      };
+    } catch {
+      parsed = {
+        reply: raw,
+        extractedData: current,
+        isComplete: false,
+        missingFields: [],
+      };
+    }
+
+    return parsed;
   }
 
   // ── Helpers ──────────────────────────────────────────────────────────────

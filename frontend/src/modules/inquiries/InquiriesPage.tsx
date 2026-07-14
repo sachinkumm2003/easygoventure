@@ -58,12 +58,12 @@ export default function InquiriesPage() {
         </div>
       ),
     },
-    { key: 'destination', header: 'Destination', render: (i) => i.destination ?? '—' },
+    { key: 'destination', header: 'Destination', render: (i) => i.destination ?? '-' },
     {
       key: 'travelers',
       header: 'Pax',
       align: 'right',
-      render: (i) => <span className="tabular-nums">{i.travelers ?? '—'}</span>,
+      render: (i) => <span className="tabular-nums">{i.travelers ?? '-'}</span>,
     },
     { key: 'status', header: 'Status', render: (i) => <StatusBadge status={i.status} tone={inquiryTone(i.status)} /> },
     {
@@ -79,7 +79,7 @@ export default function InquiriesPage() {
     <div className="space-y-5">
       <PageHeader
         title="Inquiries"
-        description="Inbound demand captured from chat, WhatsApp and the web — the top of the pipeline."
+        description="Inbound demand captured from chat, WhatsApp and the web - the top of the pipeline."
       />
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">

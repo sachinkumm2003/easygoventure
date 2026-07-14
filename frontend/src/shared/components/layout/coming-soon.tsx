@@ -11,7 +11,7 @@ export default function ComingSoonPage({ title }: { title: string }) {
         <EmptyState
           icon={Construction}
           title={`${title} is coming soon`}
-          description="This module isn't part of the current backend yet. It will light up here once the API is available — no placeholder data is shown."
+          description="This module isn't part of the current backend yet. It will light up here once the API is available - no placeholder data is shown."
         />
       </Card>
     </div>
