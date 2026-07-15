@@ -38,6 +38,16 @@ export interface LeadHotelOption {
   starRating?: number;
   location?: string;
   roomType?: string;
+  /** Internal quote currency for hotel costing. EasyGo lead costing is AED-native. */
+  currency?: string;
+  /** AED sell rate per room per night. */
+  pricePerNight?: number;
+  /** Rooms required/quoted for this option. */
+  roomCount?: number;
+  /** Max guests allowed in one room before another room is required. */
+  maxOccupancy?: number;
+  nights?: number;
+  totalPrice?: number;
   pricePerPerson?: number;
   recommended?: boolean;
 }

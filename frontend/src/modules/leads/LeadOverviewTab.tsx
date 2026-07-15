@@ -19,12 +19,19 @@ import { useUpdateLead } from '@shared/mutations/leads.mutations';
 import { useAuthStore } from '@shared/stores/auth.store';
 import type { UpdateLeadInput } from '@shared/services/leads.service';
 import type { Lead, LeadHotelOption, LeadServiceItem } from '@shared/types/domain';
+import {
+  DEFAULT_ROOM_OCCUPANCY,
+  INTERNAL_CURRENCY,
+  normalizeHotelOption,
+  toInternalAed,
+} from '@shared/lib/lead-pricing';
 import { AgencyAutocomplete } from './AgencyAutocomplete';
 import { HotelAutocomplete } from './HotelAutocomplete';
+import { RoomTypeInput } from './RoomTypeInput';
 import { ServicePickerModal } from './ServicePickerModal';
 import { WhatsAppQuoteModal } from './WhatsAppQuoteModal';
 
-const CURRENCIES = ['USD', 'AED', 'EUR', 'GBP', 'NGN'];
+const CURRENCIES = [INTERNAL_CURRENCY];
 
 interface FormState {
   name: string;
@@ -69,7 +76,7 @@ function toForm(lead: Lead): FormState {
         : (lead.services ?? []).map((name) => ({ serviceName: name })),
     hotelOptions: (lead.hotelOptions ?? []).map((h) => ({ ...h })),
     markup: num(lead.markup),
-    currency: lead.currency ?? 'USD',
+    currency: INTERNAL_CURRENCY,
     quoteValidityHours: lead.quoteValidityHours != null ? String(lead.quoteValidityHours) : '48',
     preparedBy: lead.preparedBy ?? '',
   };
@@ -123,6 +130,10 @@ export function LeadOverviewTab({ lead }: { lead: Lead }) {
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
+  const pax = Math.max(1, (Number(form.adults) || 0) + (Number(form.children) || 0));
+  const defaultNights = Math.max(1, Number(form.nights) || 1);
+  const sourceCurrency = lead.currency ?? INTERNAL_CURRENCY;
+
   const patch: UpdateLeadInput = useMemo(
     () => ({
       name: form.name.trim(),
@@ -139,13 +150,15 @@ export function LeadOverviewTab({ lead }: { lead: Lead }) {
       serviceItems: form.serviceItems,
       // Keep the legacy string list in sync (back-compat + quote fallback).
       services: form.serviceItems.map((s) => s.serviceName),
-      hotelOptions: form.hotelOptions,
+      hotelOptions: form.hotelOptions.map((h) =>
+        normalizeHotelOption(h, { pax, fallbackNights: defaultNights, fallbackCurrency: sourceCurrency }),
+      ),
       markup: toNum(form.markup),
-      currency: form.currency || undefined,
+      currency: INTERNAL_CURRENCY,
       quoteValidityHours: toNum(form.quoteValidityHours),
       preparedBy: form.preparedBy.trim() || undefined,
     }),
-    [form],
+    [defaultNights, form, pax, sourceCurrency],
   );
 
   // Live preview record: saved lead overlaid with the current (possibly unsaved) form.
@@ -226,7 +239,7 @@ export function LeadOverviewTab({ lead }: { lead: Lead }) {
           value={form.serviceItems}
           onChange={(v) => set('serviceItems', v)}
           destination={form.destination}
-          pax={Math.max(1, (Number(form.adults) || 0) + (Number(form.children) || 0))}
+          pax={pax}
           suggestions={requestedServices.filter((s) => !isRequirementFulfilled(s, form.serviceItems))}
         />
       </Section>
@@ -235,7 +248,10 @@ export function LeadOverviewTab({ lead }: { lead: Lead }) {
       <Section title="Hotel Options">
         <HotelOptionsEditor
           options={form.hotelOptions}
-          currency={form.currency}
+          currency={INTERNAL_CURRENCY}
+          pax={pax}
+          defaultNights={defaultNights}
+          sourceCurrency={sourceCurrency}
           onChange={(v) => set('hotelOptions', v)}
           suggestions={requestedHotels.filter(
             (h) => !form.hotelOptions.some((o) => o.name.trim().toLowerCase() === h.trim().toLowerCase()),
@@ -443,10 +459,18 @@ function ServicesPicker({
   };
 
   const updateAt = (i: number, patch: Partial<LeadServiceItem>) => {
-    const updated = { ...value[i], ...patch };
+    const updated = { ...value[i], ...patch, currency: INTERNAL_CURRENCY };
     // Auto-recalculate sellPrice when pricing inputs change
-    const base = updated.basePricePerUnit;
+    const base =
+      updated.basePricePerUnit != null
+        ? Math.round(
+            patch.basePricePerUnit != null
+              ? updated.basePricePerUnit
+              : toInternalAed(updated.basePricePerUnit, value[i].currency ?? INTERNAL_CURRENCY),
+          )
+        : undefined;
     if (base != null && base > 0) {
+      updated.basePricePerUnit = base;
       if (updated.pricingType === 'SHARED') {
         const cap = updated.capacity ?? 1;
         const units = Math.ceil(pax / cap);
@@ -513,9 +537,15 @@ function ServiceItemRow({
 }) {
   const pricingType = item.pricingType ?? 'PRIVATE';
   const capacity = item.capacity ?? 1;
-  const base = item.basePricePerUnit ?? 0;
-  const currency = item.currency ?? 'AED';
-
+  const currency = INTERNAL_CURRENCY;
+  const base =
+    item.basePricePerUnit != null
+      ? Math.round(toInternalAed(item.basePricePerUnit, item.currency ?? INTERNAL_CURRENCY))
+      : 0;
+  const sellPrice =
+    item.sellPrice != null
+      ? Math.round(toInternalAed(item.sellPrice, item.currency ?? INTERNAL_CURRENCY))
+      : undefined;
   let calculatedLabel = '';
   if (base > 0) {
     if (pricingType === 'SHARED') {
@@ -538,10 +568,16 @@ function ServiceItemRow({
             onValueChange={(v) => onUpdate({ serviceName: v })}
             onSelect={(s) => onUpdate({
               serviceName: s.name,
-              basePricePerUnit: s.defaultSellPrice ?? s.basePrice ?? undefined,
-              currency: s.currency ?? item.currency,
-              costPrice: s.costPrice,
-              sellPrice: s.defaultSellPrice ?? s.basePrice ?? undefined,
+              basePricePerUnit:
+                s.defaultSellPrice != null || s.basePrice != null
+                  ? Math.round(toInternalAed((s.defaultSellPrice ?? s.basePrice)!, s.currency))
+                  : undefined,
+              currency: INTERNAL_CURRENCY,
+              costPrice: s.costPrice != null ? Math.round(toInternalAed(s.costPrice, s.currency)) : undefined,
+              sellPrice:
+                s.defaultSellPrice != null || s.basePrice != null
+                  ? Math.round(toInternalAed((s.defaultSellPrice ?? s.basePrice)!, s.currency))
+                  : undefined,
             })}
           />
         </div>
@@ -626,8 +662,8 @@ function ServiceItemRow({
           <span className={`text-[10px] font-medium ${pricingType === 'SHARED' ? 'text-info' : 'text-warning'}`}>
             {pricingType === 'SHARED' ? '⇄ SHARED' : '⊕ PRIVATE'} · {calculatedLabel}
           </span>
-          {item.sellPrice != null && (
-            <span className="text-xs font-bold text-primary">{currency} {item.sellPrice}/pax</span>
+          {sellPrice != null && (
+            <span className="text-xs font-bold text-primary">{currency} {sellPrice}/pax</span>
           )}
         </div>
       )}
@@ -679,7 +715,7 @@ function ServiceInlineSearch({
               <Wrench className="size-3 shrink-0 text-muted-foreground" />
               <span className="flex-1 font-medium">{s.name}</span>
               <span className="shrink-0 text-muted-foreground">
-                {s.currency} {(s.defaultSellPrice ?? s.basePrice ?? 0).toLocaleString()}
+                {INTERNAL_CURRENCY} {Math.round(toInternalAed(s.defaultSellPrice ?? s.basePrice ?? 0, s.currency)).toLocaleString()}
               </span>
             </button>
           ))}
@@ -694,6 +730,10 @@ const emptyOption: LeadHotelOption = {
   starRating: undefined,
   location: '',
   roomType: '',
+  currency: INTERNAL_CURRENCY,
+  roomCount: 1,
+  maxOccupancy: DEFAULT_ROOM_OCCUPANCY,
+  nights: 1,
   pricePerPerson: undefined,
   recommended: false,
 };
@@ -701,22 +741,34 @@ const emptyOption: LeadHotelOption = {
 function HotelOptionsEditor({
   options,
   currency,
+  pax,
+  defaultNights,
+  sourceCurrency,
   onChange,
   suggestions = [],
 }: {
   options: LeadHotelOption[];
   currency: string;
+  pax: number;
+  defaultNights: number;
+  sourceCurrency: string;
   onChange: (v: LeadHotelOption[]) => void;
   suggestions?: string[];
 }) {
   const update = (i: number, patch: Partial<LeadHotelOption>) =>
-    onChange(options.map((o, idx) => (idx === i ? { ...o, ...patch } : o)));
+    onChange(options.map((o, idx) => (
+      idx === i
+        ? normalizeHotelOption({ ...o, ...patch }, { pax, fallbackNights: defaultNights, fallbackCurrency: sourceCurrency })
+        : o
+    )));
 
   const remove = (i: number) => onChange(options.filter((_, idx) => idx !== i));
 
-  const add = () => onChange([...options, { ...emptyOption }]);
+  const add = () =>
+    onChange([...options, normalizeHotelOption({ ...emptyOption }, { pax, fallbackNights: defaultNights })]);
 
-  const addNamed = (name: string) => onChange([...options, { ...emptyOption, name }]);
+  const addNamed = (name: string) =>
+    onChange([...options, normalizeHotelOption({ ...emptyOption, name }, { pax, fallbackNights: defaultNights })]);
 
   // Only one option can be the recommended hotel.
   const setRecommended = (i: number) =>
@@ -728,7 +780,9 @@ function HotelOptionsEditor({
       {options.length === 0 && (
         <p className="text-sm text-muted-foreground">No hotel options yet. Add one or two to quote.</p>
       )}
-      {options.map((opt, i) => (
+      {options.map((rawOpt, i) => {
+        const opt = normalizeHotelOption(rawOpt, { pax, fallbackNights: defaultNights, fallbackCurrency: sourceCurrency });
+        return (
         <div key={i} className="space-y-2 rounded-lg border border-border bg-muted/20 p-3">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-muted-foreground">Option {i + 1}</span>
@@ -781,23 +835,56 @@ function HotelOptionsEditor({
             />
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Input
+            <RoomTypeInput
               value={opt.roomType ?? ''}
-              onChange={(e) => update(i, { roomType: e.target.value })}
+              onChange={(roomType) => update(i, { roomType })}
               placeholder="Room type"
             />
             <Input
               type="number"
               min={0}
-              value={opt.pricePerPerson ?? ''}
+              value={opt.pricePerNight ?? ''}
               onChange={(e) =>
-                update(i, { pricePerPerson: e.target.value === '' ? undefined : Number(e.target.value) })
+                update(i, { pricePerNight: e.target.value === '' ? undefined : Number(e.target.value) })
               }
-              placeholder={`Price/person (${currency})`}
+              placeholder={`AED/night (${currency})`}
             />
           </div>
+          <div className="grid grid-cols-3 gap-2">
+            <Input
+              type="number"
+              min={1}
+              value={opt.roomCount ?? ''}
+              onChange={(e) => update(i, { roomCount: e.target.value === '' ? undefined : Number(e.target.value) })}
+              placeholder="Rooms"
+            />
+            <Input
+              type="number"
+              min={1}
+              value={opt.maxOccupancy ?? ''}
+              onChange={(e) => update(i, { maxOccupancy: e.target.value === '' ? undefined : Number(e.target.value) })}
+              placeholder="Max/room"
+            />
+            <Input
+              type="number"
+              min={1}
+              value={opt.nights ?? ''}
+              onChange={(e) => update(i, { nights: e.target.value === '' ? undefined : Number(e.target.value) })}
+              placeholder="Nights"
+            />
+          </div>
+          <div className="flex items-center justify-between rounded-md bg-muted/40 px-2.5 py-1.5 text-xs">
+            <span className="text-muted-foreground">
+              {opt.roomCount} room{opt.roomCount && opt.roomCount > 1 ? 's' : ''} for {pax} pax · max {opt.maxOccupancy ?? DEFAULT_ROOM_OCCUPANCY}/room
+            </span>
+            <span className="font-semibold text-primary">
+              AED {(opt.totalPrice ?? 0).toLocaleString()} total
+              {opt.pricePerPerson != null ? ` · AED ${opt.pricePerPerson}/pax` : ''}
+            </span>
+          </div>
         </div>
-      ))}
+        );
+      })}
       <Button type="button" variant="secondary" onClick={add}>
         <Plus className="size-4" /> Add hotel option
       </Button>

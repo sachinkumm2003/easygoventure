@@ -5,6 +5,7 @@
 //   — Easy Go Venture Tourism (by {preparedBy})
 // so the client can track who prepared / closed each quote.
 import type { Lead, LeadHotelOption, LeadServiceItem } from '@shared/types/domain';
+import { CUSTOMER_CURRENCY, INTERNAL_CURRENCY, normalizeHotelOption, toCustomerUsd } from './lead-pricing';
 
 const CURRENCY_SYMBOL: Record<string, string> = {
   USD: '$',
@@ -40,20 +41,67 @@ function stars(rating?: number): string {
   return rating ? ` (${rating}★)` : '';
 }
 
-function hotelBlock(option: LeadHotelOption, index: number, currency: string): string {
+function optionCurrency(option: LeadHotelOption, fallbackCurrency: string): string {
+  return option.currency ?? fallbackCurrency ?? INTERNAL_CURRENCY;
+}
+
+function hotelOptionPrice(option: LeadHotelOption, fallbackCurrency: string): string | null {
+  if (option.pricePerPerson == null) return null;
+  return `${money(toCustomerUsd(option.pricePerPerson, optionCurrency(option, fallbackCurrency)), CUSTOMER_CURRENCY)}/person`;
+}
+
+interface HotelGroup {
+  name: string;
+  starRating?: number;
+  location?: string;
+  recommended?: boolean;
+  options: LeadHotelOption[];
+}
+
+function hotelGroupKey(option: LeadHotelOption): string {
+  return [option.name, option.location ?? '', option.starRating ?? ''].join('|').toLowerCase();
+}
+
+function groupHotelOptions(options: LeadHotelOption[]): HotelGroup[] {
+  const groups = new Map<string, HotelGroup>();
+  options.forEach((option) => {
+    const key = hotelGroupKey(option);
+    const existing = groups.get(key);
+    if (existing) {
+      existing.recommended = existing.recommended || option.recommended;
+      existing.options.push(option);
+      return;
+    }
+    groups.set(key, {
+      name: option.name,
+      starRating: option.starRating,
+      location: option.location,
+      recommended: option.recommended,
+      options: [option],
+    });
+  });
+  return [...groups.values()];
+}
+
+function hotelBlock(group: HotelGroup, index: number, currency: string): string {
   const lines: string[] = [];
-  lines.push(`*${index + 1}. ${option.name}*${stars(option.starRating)}${option.recommended ? ' ✅' : ''}`);
-  if (option.location) lines.push(`📍 ${option.location}`);
-  const priceLabel =
-    option.pricePerPerson != null ? `${money(option.pricePerPerson, currency)}/person` : null;
-  const room = [option.roomType, priceLabel].filter(Boolean).join(' | ');
-  if (room) lines.push(room);
+  lines.push(`*${index + 1}. ${group.name}*${stars(group.starRating)}${group.recommended ? ' ✅' : ''}`);
+  if (group.location) lines.push(`📍 ${group.location}`);
+  group.options.forEach((option) => {
+    const priceLabel = hotelOptionPrice(option, currency);
+    const rooms = option.roomCount ? `${option.roomCount} room${option.roomCount > 1 ? 's' : ''}` : null;
+    const occupancy = option.maxOccupancy ? `max ${option.maxOccupancy}/room` : null;
+    const nights = option.nights ? `${option.nights}N` : null;
+    const details = [rooms, nights, occupancy, priceLabel].filter(Boolean).join(' | ');
+    const label = option.roomType || 'Room option';
+    lines.push(`• ${label}${details ? ` — ${details}` : ''}`);
+  });
   return lines.join('\n');
 }
 
 function serviceAddOnLine(svc: LeadServiceItem, fallbackCurrency: string): string {
-  const cur = svc.currency ?? fallbackCurrency;
-  return `🔸 ${svc.serviceName} — ${money(svc.sellPrice!, cur)}/pax`;
+  const cur = svc.currency ?? fallbackCurrency ?? INTERNAL_CURRENCY;
+  return `🔸 ${svc.serviceName} — ${money(toCustomerUsd(svc.sellPrice!, cur), CUSTOMER_CURRENCY)}/pax`;
 }
 
 export interface WhatsAppQuoteOptions {
@@ -61,7 +109,7 @@ export interface WhatsAppQuoteOptions {
 }
 
 export function buildWhatsAppQuote(lead: Lead, opts: WhatsAppQuoteOptions = {}): string {
-  const currency = lead.currency ?? 'USD';
+  const currency = lead.currency ?? INTERNAL_CURRENCY;
   const pax = (lead.adults ?? 0) + (lead.children ?? 0);
   const blocks: string[] = [];
 
@@ -77,9 +125,15 @@ export function buildWhatsAppQuote(lead: Lead, opts: WhatsAppQuoteOptions = {}):
   blocks.push(`For: ${lead.name}${lead.companyName ? ` (${lead.companyName})` : ''}`);
 
   // ── Hotel options ──────────────────────────────────────────────────────────
-  const hotels = lead.hotelOptions ?? [];
+  const hotels = (lead.hotelOptions ?? []).map((h) =>
+    normalizeHotelOption(h, {
+      pax: Math.max(1, pax),
+      fallbackNights: lead.nights ?? 1,
+      fallbackCurrency: lead.currency ?? INTERNAL_CURRENCY,
+    }),
+  );
   if (hotels.length > 0) {
-    blocks.push(hotels.map((h, i) => hotelBlock(h, i, currency)).join('\n\n'));
+    blocks.push(groupHotelOptions(hotels).map((g, i) => hotelBlock(g, i, currency)).join('\n\n'));
   }
 
   // ── Priced services (shown as add-ons with per-person cost) ─────────────────
@@ -103,19 +157,15 @@ export function buildWhatsAppQuote(lead: Lead, opts: WhatsAppQuoteOptions = {}):
   ].filter(Boolean);
   blocks.push(`*Includes:* ${includes.join(' · ')}`);
 
-  // ── Package total (recommended hotel + same-currency services) ─────────────
+  // ── Package total (recommended hotel + converted services) ─────────────────
   const recommended = hotels.find((h) => h.recommended) ?? hotels[0];
   if (recommended?.pricePerPerson != null) {
-    const sameCurrencyServiceTotal = pricedAddOns
-      .filter((s) => (s.currency ?? currency).toUpperCase() === currency.toUpperCase())
-      .reduce((sum, s) => sum + (s.sellPrice ?? 0), 0);
-    const total = recommended.pricePerPerson + sameCurrencyServiceTotal;
-    const hasExtra = pricedAddOns.some(
-      (s) => (s.currency ?? currency).toUpperCase() !== currency.toUpperCase(),
+    const hotelUsd = toCustomerUsd(recommended.pricePerPerson, optionCurrency(recommended, currency));
+    const servicesUsd = pricedAddOns.reduce(
+      (sum, s) => sum + toCustomerUsd(s.sellPrice ?? 0, s.currency ?? currency),
+      0,
     );
-    blocks.push(
-      `💰 *Package from ${money(total, currency)}/person*${hasExtra ? ' + cross-currency services' : ''}`,
-    );
+    blocks.push(`💰 *Package from ${money(hotelUsd + servicesUsd, CUSTOMER_CURRENCY)}/person*`);
   }
 
   // ── Validity + terms ───────────────────────────────────────────────────────

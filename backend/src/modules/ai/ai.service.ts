@@ -453,6 +453,8 @@ export class AIService {
       '━━ HOTEL EXTRACTION ━━',
       'When user mentions any hotel name or type, add to hotels[]. Infer star rating from name (Atlantis/Burj Al Arab = 5★, Marriott/Hilton = 4-5★, Holiday Inn = 3-4★).',
       'Split-stay example: "3 nights Atlantis then 2 nights in JBR area" → two hotel entries.',
+      'If the user gives a room type, occupancy, room count, or AED room rate, put them on the hotel as roomType, maxOccupancy, roomCount, and pricePerNight.',
+      'Default hotel maxOccupancy is 2 unless the message says otherwise. The UI will increase roomCount when travelers exceed maxOccupancy.',
       '',
       '━━ SERVICE EXTRACTION & PRICING ━━',
       'When a service is mentioned, classify as PRIVATE or SHARED:',
@@ -487,7 +489,7 @@ export class AIService {
       '9. DO NOT put hotel info, city info, or service info in the notes field.',
       '',
       `EXAMPLE — if user says "Book Dubai + Doha trip for Parv Jain, 10-18 July, 2 pax (1 adult 1 child), 2 nights Dubai 4-star, 3 nights Doha 5-star, desert safari and skydiving":`,
-      `{"reply":"Got it Parv! Dubai (2 nights, 4★) + Doha (3 nights, 5★), 10–18 July, 1 adult + 1 child. Desert safari and skydiving in Dubai noted. Could you share your phone number?","extractedData":{"name":"Parv Jain","phone":null,"email":null,"companyName":null,"inquiryType":"TRAVEL_PACKAGE","source":"MANUAL","destination":"Dubai, Doha","startDate":"${this.today().slice(0, 4)}-07-10","endDate":"${this.today().slice(0, 4)}-07-18","budget":null,"travelers":2,"adults":1,"children":1,"infants":0,"nationality":null,"notes":null,"hotels":[{"city":"Dubai","name":"4-Star Hotel Dubai","checkIn":"${this.today().slice(0, 4)}-07-10","checkOut":"${this.today().slice(0, 4)}-07-12","nights":2,"rating":4,"roomCount":1},{"city":"Doha","name":"5-Star Hotel Doha","checkIn":"${this.today().slice(0, 4)}-07-12","checkOut":"${this.today().slice(0, 4)}-07-15","nights":3,"rating":5,"roomCount":1}],"services":[{"name":"Desert Safari","serviceType":"tour","pricingType":"SHARED","capacity":40,"basePricePerUnit":150,"currency":"AED","date":null,"notes":null},{"name":"Skydiving","serviceType":"activity","pricingType":"PRIVATE","capacity":null,"basePricePerUnit":1800,"currency":"AED","date":null,"notes":null}]},"isComplete":false,"missingFields":["phone"],"whatsappGreeting":""}`,
+      `{"reply":"Got it Parv! Dubai (2 nights, 4★) + Doha (3 nights, 5★), 10–18 July, 1 adult + 1 child. Desert safari and skydiving in Dubai noted. Could you share your phone number?","extractedData":{"name":"Parv Jain","phone":null,"email":null,"companyName":null,"inquiryType":"TRAVEL_PACKAGE","source":"MANUAL","destination":"Dubai, Doha","startDate":"${this.today().slice(0, 4)}-07-10","endDate":"${this.today().slice(0, 4)}-07-18","budget":null,"travelers":2,"adults":1,"children":1,"infants":0,"nationality":null,"notes":null,"hotels":[{"city":"Dubai","name":"4-Star Hotel Dubai","checkIn":"${this.today().slice(0, 4)}-07-10","checkOut":"${this.today().slice(0, 4)}-07-12","nights":2,"rating":4,"roomCount":1,"maxOccupancy":2},{"city":"Doha","name":"5-Star Hotel Doha","checkIn":"${this.today().slice(0, 4)}-07-12","checkOut":"${this.today().slice(0, 4)}-07-15","nights":3,"rating":5,"roomCount":1,"maxOccupancy":2}],"services":[{"name":"Desert Safari","serviceType":"tour","pricingType":"SHARED","capacity":40,"basePricePerUnit":150,"currency":"AED","date":null,"notes":null},{"name":"Skydiving","serviceType":"activity","pricingType":"PRIVATE","capacity":null,"basePricePerUnit":1800,"currency":"AED","date":null,"notes":null}]},"isComplete":false,"missingFields":["phone"],"whatsappGreeting":""}`,
       '',
       'Current extracted data (merge with this, never overwrite non-null fields with null):',
       JSON.stringify(current, null, 2),
@@ -513,7 +515,7 @@ export class AIService {
       if (Array.isArray((obj.extractedData as Record<string, unknown>)?.hotels)) {
         merged.hotels = (obj.extractedData as Record<string, unknown>).hotels as LeadIntakeChatResponse['extractedData']['hotels'];
       } else if (Array.isArray(current.hotels)) {
-        merged.hotels = current.hotels as LeadIntakeChatResponse['extractedData']['hotels'];
+        merged.hotels = current.hotels;
       }
       if (Array.isArray((obj.extractedData as Record<string, unknown>)?.services)) {
         merged.services = (obj.extractedData as Record<string, unknown>).services as LeadIntakeChatResponse['extractedData']['services'];
@@ -524,7 +526,7 @@ export class AIService {
         reply: this.asString(obj.reply) ?? 'Got it! Could you share more details?',
         extractedData: merged,
         isComplete: Boolean(obj.isComplete),
-        missingFields: Array.isArray(obj.missingFields) ? (obj.missingFields as string[]) : [],
+        missingFields: Array.isArray(obj.missingFields) ? obj.missingFields : [],
         whatsappGreeting: this.asString(obj.whatsappGreeting) ?? undefined,
       };
     } catch {

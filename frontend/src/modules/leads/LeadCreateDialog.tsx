@@ -24,7 +24,15 @@ import {
   type LeadSource as LeadSourceT,
 } from '@shared/types/domain';
 import { titleCase } from '@shared/lib/format';
+import {
+  DEFAULT_ROOM_OCCUPANCY,
+  INTERNAL_CURRENCY,
+  hotelTotalAed,
+  requiredRoomCount,
+  toInternalAed,
+} from '@shared/lib/lead-pricing';
 import { cn } from '@shared/utils/cn';
+import { RoomTypeInput } from './RoomTypeInput';
 
 function uuid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -73,6 +81,7 @@ function hashName(s: string): number {
 }
 
 function hotelPricePerNight(hotel: ExtractedHotel): number {
+  if (hotel.pricePerNight != null && hotel.pricePerNight > 0) return Math.round(hotel.pricePerNight);
   const stars = hotel.rating ?? 4;
   const ranges: Record<number, [number, number]> = {
     5: [800, 1200], 4: [400, 700], 3: [200, 350], 2: [100, 200], 1: [60, 100],
@@ -85,13 +94,30 @@ function hotelPricePerNight(hotel: ExtractedHotel): number {
 interface ServicePricing { pricePerPerson: number; total: number }
 function calcServicePrice(svc: ExtractedService, pax: number): ServicePricing | null {
   if (!svc.basePricePerUnit) return null;
+  const basePrice = Math.round(toInternalAed(svc.basePricePerUnit, svc.currency ?? INTERNAL_CURRENCY));
   if (svc.pricingType === 'SHARED') {
     const cap = svc.capacity ?? 1;
     const units = Math.ceil(pax / cap);
-    const total = units * svc.basePricePerUnit;
+    const total = units * basePrice;
     return { pricePerPerson: total / pax, total };
   }
-  return { pricePerPerson: svc.basePricePerUnit, total: svc.basePricePerUnit * pax };
+  return { pricePerPerson: basePrice, total: basePrice * pax };
+}
+
+function calcHotelOption(hotel: ExtractedHotel, pax: number, fallbackNights?: number) {
+  const nights = Math.max(1, hotel.nights ?? fallbackNights ?? 1);
+  const maxOccupancy = Math.max(1, hotel.maxOccupancy ?? DEFAULT_ROOM_OCCUPANCY);
+  const rooms = requiredRoomCount(pax, maxOccupancy, hotel.roomCount);
+  const pricePerNight = hotelPricePerNight(hotel);
+  const total = hotelTotalAed(pricePerNight, nights, rooms);
+  return {
+    nights,
+    maxOccupancy,
+    rooms,
+    pricePerNight,
+    total,
+    pricePerPerson: Math.round(total / Math.max(1, pax)),
+  };
 }
 
 // ── Date helpers ─────────────────────────────────────────────────────────────
@@ -246,15 +272,19 @@ export function LeadCreateDialog({
     try {
       // Map extracted hotels → structured hotel options with deterministic pricing
       const hotelOptions = fields.hotels.map((h, idx) => {
-        const hotelNights = h.nights ?? totalNights ?? 1;
-        const rooms = h.roomCount ?? 1;
-        const pricePerNight = hotelPricePerNight(h);
-        const pricePerPerson = Math.round((pricePerNight * hotelNights * rooms) / Math.max(1, pax));
+        const pricing = calcHotelOption(h, pax, totalNights ?? undefined);
         return {
           name: h.name ?? `${h.rating ?? 4}-Star Hotel ${h.city ?? ''}`.trim(),
           starRating: h.rating,
           location: h.city ?? undefined,
-          pricePerPerson,
+          roomType: h.roomType,
+          currency: INTERNAL_CURRENCY,
+          pricePerNight: pricing.pricePerNight,
+          roomCount: pricing.rooms,
+          maxOccupancy: pricing.maxOccupancy,
+          nights: pricing.nights,
+          totalPrice: pricing.total,
+          pricePerPerson: pricing.pricePerPerson,
           recommended: idx === 0,
         };
       });
@@ -266,8 +296,11 @@ export function LeadCreateDialog({
           const pricing = calcServicePrice(s, Math.max(1, pax));
           return {
             serviceName: s.name!,
-            currency: s.currency ?? 'AED',
-            basePricePerUnit: s.basePricePerUnit ?? undefined,
+            currency: INTERNAL_CURRENCY,
+            basePricePerUnit:
+              s.basePricePerUnit != null
+                ? Math.round(toInternalAed(s.basePricePerUnit, s.currency ?? INTERNAL_CURRENCY))
+                : undefined,
             pricingType: (s.pricingType as 'PRIVATE' | 'SHARED') ?? 'PRIVATE',
             capacity: s.capacity ?? undefined,
             sellPrice: pricing ? Math.round(pricing.pricePerPerson) : undefined,
@@ -303,6 +336,7 @@ export function LeadCreateDialog({
         locations: fields.locations.length > 0 ? fields.locations : undefined,
         destination,
         nights: totalNights ?? undefined,
+        currency: INTERNAL_CURRENCY,
         hotelOptions: hotelOptions.length > 0 ? hotelOptions : undefined,
         serviceItems: serviceItems.length > 0 ? serviceItems : undefined,
         services: fields.services.map((s) => s.name).filter(Boolean) as string[],
@@ -338,8 +372,8 @@ export function LeadCreateDialog({
       : (Number(fields.adults) || 0) + (Number(fields.children) || 0) + (Number(fields.infants) || 0) || 1,
   );
 
-  const addHotel = () => set({ hotels: [...fields.hotels, { city: '', name: '', nights: 1, rating: 4, roomCount: 1 }] });
-  const addService = () => set({ services: [...fields.services, { name: '', serviceType: 'other', pricingType: 'PRIVATE', basePricePerUnit: 0, currency: 'AED' }] });
+  const addHotel = () => set({ hotels: [...fields.hotels, { city: '', name: '', nights: 1, rating: 4, roomCount: 1, maxOccupancy: DEFAULT_ROOM_OCCUPANCY }] });
+  const addService = () => set({ services: [...fields.services, { name: '', serviceType: 'other', pricingType: 'PRIVATE', basePricePerUnit: 0, currency: INTERNAL_CURRENCY }] });
 
   const rightPanel = (
     <div className="flex-1 overflow-y-auto space-y-3 pr-0.5">
@@ -609,11 +643,8 @@ function HotelEditor({
   onUpdate: (h: ExtractedHotel) => void;
   onRemove: () => void;
 }) {
-  const nights = hotel.nights ?? 1;
-  const rooms = hotel.roomCount ?? 1;
-  const pricePerNight = hotelPricePerNight(hotel);
-  const total = pricePerNight * nights * rooms;
-  const perPerson = Math.round(total / pax);
+  const pricing = calcHotelOption(hotel, pax);
+  const { nights, rooms, maxOccupancy, pricePerNight, total, pricePerPerson } = pricing;
 
   return (
     <div className="rounded-lg border border-primary/20 bg-primary/[0.03] p-2.5 space-y-2">
@@ -641,7 +672,24 @@ function HotelEditor({
         </div>
         <div>
           <label className="text-[10px] text-muted-foreground">Rooms</label>
-          <Input type="number" min={1} value={hotel.roomCount ?? 1} onChange={(e) => onUpdate({ ...hotel, roomCount: Number(e.target.value) })} className="text-xs h-7" />
+          <Input type="number" min={1} value={rooms} onChange={(e) => onUpdate({ ...hotel, roomCount: Number(e.target.value) })} className="text-xs h-7" />
+        </div>
+        <div>
+          <label className="text-[10px] text-muted-foreground">Room type</label>
+          <RoomTypeInput
+            value={hotel.roomType ?? ''}
+            onChange={(roomType) => onUpdate({ ...hotel, roomType })}
+            placeholder="Deluxe Room"
+            className="text-xs h-7"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] text-muted-foreground">Max/room</label>
+          <Input type="number" min={1} value={maxOccupancy} onChange={(e) => onUpdate({ ...hotel, maxOccupancy: Number(e.target.value) || DEFAULT_ROOM_OCCUPANCY })} className="text-xs h-7" />
+        </div>
+        <div>
+          <label className="text-[10px] text-muted-foreground">AED/night</label>
+          <Input type="number" min={0} value={pricePerNight} onChange={(e) => onUpdate({ ...hotel, pricePerNight: Number(e.target.value) || undefined })} className="text-xs h-7" />
         </div>
         <div>
           <label className="text-[10px] text-muted-foreground">Check-in</label>
@@ -658,11 +706,11 @@ function HotelEditor({
       </div>
       <div className="flex items-center justify-between pt-0.5">
         <span className="text-[10px] text-muted-foreground">
-          AED {pricePerNight.toLocaleString()}/night × {nights}N × {rooms} room{rooms > 1 ? 's' : ''}
+          AED {pricePerNight.toLocaleString()}/night × {nights}N × {rooms} room{rooms > 1 ? 's' : ''} · max {maxOccupancy}/room
         </span>
         <div className="text-right">
           <span className="text-xs font-semibold text-primary">AED {total.toLocaleString()}</span>
-          <span className="text-[10px] text-muted-foreground ml-1.5">(AED {perPerson}/pax)</span>
+          <span className="text-[10px] text-muted-foreground ml-1.5">(AED {pricePerPerson}/pax)</span>
         </div>
       </div>
     </div>
@@ -683,7 +731,11 @@ function ServiceEditor({
   onRemove: () => void;
 }) {
   const pricing = calcServicePrice(service, pax);
-  const currency = service.currency ?? 'AED';
+  const currency = INTERNAL_CURRENCY;
+  const basePrice =
+    service.basePricePerUnit != null
+      ? Math.round(toInternalAed(service.basePricePerUnit, service.currency ?? INTERNAL_CURRENCY))
+      : undefined;
 
   return (
     <div className="rounded-lg border border-secondary/30 bg-secondary/[0.04] p-2.5 space-y-2">
@@ -697,8 +749,11 @@ function ServiceEditor({
               ...service,
               name: s.name,
               serviceType: s.serviceType ?? service.serviceType,
-              basePricePerUnit: s.defaultSellPrice ?? s.basePrice ?? service.basePricePerUnit,
-              currency: s.currency ?? service.currency ?? 'AED',
+              basePricePerUnit:
+                s.defaultSellPrice != null || s.basePrice != null
+                  ? Math.round(toInternalAed((s.defaultSellPrice ?? s.basePrice)!, s.currency))
+                  : service.basePricePerUnit,
+              currency: INTERNAL_CURRENCY,
               pricingType: s.serviceType?.toLowerCase().includes('shared') ? 'SHARED' : (service.pricingType ?? 'PRIVATE'),
             })}
           />
@@ -741,16 +796,16 @@ function ServiceEditor({
         </div>
         <div className="col-span-2">
           <label className="text-[10px] text-muted-foreground">Base price per unit ({currency})</label>
-          <Input type="number" min={0} value={service.basePricePerUnit ?? ''} onChange={(e) => onUpdate({ ...service, basePricePerUnit: Number(e.target.value) })} placeholder="500" className="text-xs h-7" />
+          <Input type="number" min={0} value={basePrice ?? ''} onChange={(e) => onUpdate({ ...service, basePricePerUnit: Number(e.target.value), currency: INTERNAL_CURRENCY })} placeholder="500" className="text-xs h-7" />
         </div>
         <div>
           <label className="text-[10px] text-muted-foreground">Currency</label>
           <select
-            value={service.currency ?? 'AED'}
+            value={INTERNAL_CURRENCY}
             onChange={(e) => onUpdate({ ...service, currency: e.target.value })}
             className="w-full h-7 rounded border border-input bg-background px-2 text-xs outline-none focus:border-primary"
           >
-            {['AED', 'USD', 'EUR', 'GBP', 'INR'].map((c) => <option key={c}>{c}</option>)}
+            {[INTERNAL_CURRENCY].map((c) => <option key={c}>{c}</option>)}
           </select>
         </div>
         <div>
@@ -762,8 +817,8 @@ function ServiceEditor({
         <div className="flex items-center justify-between pt-0.5">
           <span className={cn('text-[10px] font-medium', service.pricingType === 'SHARED' ? 'text-info' : 'text-warning')}>
             {service.pricingType === 'SHARED'
-              ? `SHARED · ${Math.ceil(pax / (service.capacity ?? 1))} unit(s) × ${currency} ${service.basePricePerUnit ?? 0}`
-              : `PRIVATE · ${currency} ${service.basePricePerUnit ?? 0} × ${pax} pax`}
+              ? `SHARED · ${Math.ceil(pax / (service.capacity ?? 1))} unit(s) × ${currency} ${basePrice ?? 0}`
+              : `PRIVATE · ${currency} ${basePrice ?? 0} × ${pax} pax`}
           </span>
           <div className="text-right">
             <span className="text-xs font-semibold text-primary">{currency} {pricing.total.toLocaleString()}</span>
@@ -875,7 +930,7 @@ function ServiceSearchInput({
               <Wrench className="size-3 shrink-0 text-muted-foreground" />
               <span className="flex-1 font-medium">{s.name}</span>
               <span className="text-muted-foreground shrink-0">
-                {s.currency} {(s.defaultSellPrice ?? s.basePrice ?? 0).toLocaleString()}
+                {INTERNAL_CURRENCY} {Math.round(toInternalAed(s.defaultSellPrice ?? s.basePrice ?? 0, s.currency)).toLocaleString()}
               </span>
             </button>
           ))}

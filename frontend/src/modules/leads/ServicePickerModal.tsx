@@ -8,7 +8,7 @@ import { Skeleton } from '@shared/components/ui/skeleton';
 import { EmptyState } from '@shared/components/ui/empty-state';
 import { useServices } from '@shared/queries/services.queries';
 import { useDebouncedValue } from '@shared/hooks/useDebouncedValue';
-import { formatCurrency } from '@shared/lib/format';
+import { INTERNAL_CURRENCY, toInternalAed } from '@shared/lib/lead-pricing';
 import type { LeadServiceItem, Service } from '@shared/types/domain';
 
 /**
@@ -17,15 +17,16 @@ import type { LeadServiceItem, Service } from '@shared/types/domain';
  * as the variantGroup so the requirement reads as fulfilled.
  */
 function serviceToSnapshot(s: Service, requirement?: string): LeadServiceItem {
-  const base = s.defaultSellPrice ?? s.basePrice;
+  const sourceBase = s.defaultSellPrice ?? s.basePrice;
+  const base = sourceBase != null ? Math.round(toInternalAed(sourceBase, s.currency)) : undefined;
   return {
     serviceId: s.id,
     serviceName: s.name,
     categoryCode: s.categoryCode,
     variantGroup: s.variantGroup ?? requirement ?? undefined,
     supplier: s.supplier,
-    currency: s.currency,
-    costPrice: s.costPrice,
+    currency: INTERNAL_CURRENCY,
+    costPrice: s.costPrice != null ? Math.round(toInternalAed(s.costPrice, s.currency)) : undefined,
     sellPrice: base,
     basePricePerUnit: base,
     pricingType: 'PRIVATE',
@@ -85,7 +86,7 @@ export function ServicePickerModal({
   const addCustom = () => {
     const name = custom.trim();
     if (!name) return;
-    onAdd({ serviceName: name, variantGroup: requirement, pricingType: 'PRIVATE', snapshotDate: new Date().toISOString() });
+    onAdd({ serviceName: name, variantGroup: requirement, currency: INTERNAL_CURRENCY, pricingType: 'PRIVATE', snapshotDate: new Date().toISOString() });
     setCustom('');
   };
 
@@ -149,7 +150,7 @@ export function ServicePickerModal({
                   </div>
                   {price != null && (
                     <span className="shrink-0 text-sm font-medium text-foreground">
-                      {formatCurrency(price, s.currency)}
+                      {INTERNAL_CURRENCY} {Math.round(toInternalAed(price, s.currency)).toLocaleString()}
                     </span>
                   )}
                   {isAttached ? (

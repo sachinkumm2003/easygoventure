@@ -54,6 +54,42 @@ export class LeadHotelOptionDto {
   @MaxLength(120)
   roomType?: string;
 
+  @ApiPropertyOptional({ example: 'AED', default: 'AED' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(3)
+  currency?: string;
+
+  @ApiPropertyOptional({ example: 450, minimum: 0, description: 'AED sell rate per room per night' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  pricePerNight?: number;
+
+  @ApiPropertyOptional({ example: 2, minimum: 1 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  roomCount?: number;
+
+  @ApiPropertyOptional({ example: 3, minimum: 1, description: 'Max guests allowed per room' })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  maxOccupancy?: number;
+
+  @ApiPropertyOptional({ example: 4, minimum: 1 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  nights?: number;
+
+  @ApiPropertyOptional({ example: 3600, minimum: 0 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  totalPrice?: number;
+
   @ApiPropertyOptional({ example: 365, minimum: 0 })
   @IsOptional()
   @IsNumber()
@@ -127,7 +163,7 @@ export class LeadHotelDto {
   @Min(0)
   totalPrice?: number;
 
-  @ApiPropertyOptional({ example: 'USD' })
+  @ApiPropertyOptional({ example: 'AED' })
   @IsOptional()
   @IsString()
   currency?: string;
@@ -327,7 +363,7 @@ export class LeadServiceItemDto {
   @MaxLength(120)
   supplier?: string;
 
-  @ApiPropertyOptional({ example: 'USD' })
+  @ApiPropertyOptional({ example: 'AED' })
   @IsOptional()
   @IsString()
   @MaxLength(3)
@@ -539,7 +575,7 @@ export class CreateLeadDto {
   @Min(0)
   markup?: number;
 
-  @ApiPropertyOptional({ example: 'USD', default: 'USD' })
+  @ApiPropertyOptional({ example: 'AED', default: 'AED' })
   @IsOptional()
   @IsString()
   @MaxLength(3)

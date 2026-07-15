@@ -49,6 +49,7 @@ import {
 import { useCreateFollowup, useUpdateFollowup } from '@shared/mutations/followups.mutations';
 import { useUpdateFulfillment } from '@shared/mutations/fulfillments.mutations';
 import { LeadOverviewTab } from './LeadOverviewTab';
+import { RoomTypeInput } from './RoomTypeInput';
 import { leadDisplayName } from './lead-display';
 import { useLeadChat } from '@shared/mutations/ai.mutations';
 import {
@@ -68,6 +69,7 @@ import {
   type Proposal,
 } from '@shared/types/domain';
 import { formatCurrency, formatDate, formatRelative, titleCase } from '@shared/lib/format';
+import { INTERNAL_CURRENCY } from '@shared/lib/lead-pricing';
 import { fulfillmentTone, leadTone, proposalTone } from '@shared/lib/status';
 import { useUiStore } from '@shared/stores/ui.store';
 import { useAuthStore } from '@shared/stores/auth.store';
@@ -391,6 +393,7 @@ function ItineraryTab({ lead }: { lead: Lead }) {
 }
 
 const MEAL_PLANS = ['BB', 'HB', 'FB', 'AI', 'RO'];
+const HOTEL_CURRENCIES = [INTERNAL_CURRENCY];
 const CURRENCIES = ['USD', 'AED', 'EUR', 'GBP', 'SAR', 'INR'];
 
 function LocationCard({
@@ -405,7 +408,7 @@ function LocationCard({
   onRemove: () => void;
 }) {
   const [showHotelForm, setShowHotelForm] = useState(false);
-  const [newHotel, setNewHotel] = useState<Partial<LeadHotel>>({ currency: 'USD', roomCount: 1 });
+  const [newHotel, setNewHotel] = useState<Partial<LeadHotel>>({ currency: INTERNAL_CURRENCY, roomCount: 1 });
 
   const commitHotel = () => {
     if (!newHotel.hotelName?.trim()) return;
@@ -423,11 +426,11 @@ function LocationCard({
       rating: newHotel.rating,
       pricePerNight: ppn,
       totalPrice: nights ? ppn * nights * rooms : undefined,
-      currency: newHotel.currency ?? 'USD',
+      currency: newHotel.currency ?? INTERNAL_CURRENCY,
       notes: newHotel.notes?.trim() || undefined,
     };
     onUpdate({ hotels: [...(loc.hotels ?? []), hotel] });
-    setNewHotel({ currency: 'USD', roomCount: 1 });
+    setNewHotel({ currency: INTERNAL_CURRENCY, roomCount: 1 });
     setShowHotelForm(false);
   };
 
@@ -521,7 +524,12 @@ function LocationCard({
             <div className="grid grid-cols-3 gap-2">
               <label className="space-y-0.5">
                 <span className="text-[10px] text-muted-foreground">Room type</span>
-                <Input placeholder="e.g. Deluxe" value={newHotel.roomType ?? ''} onChange={(e) => setNewHotel((p) => ({ ...p, roomType: e.target.value }))} className="h-7 text-xs" />
+                <RoomTypeInput
+                  placeholder="Deluxe Room"
+                  value={newHotel.roomType ?? ''}
+                  onChange={(roomType) => setNewHotel((p) => ({ ...p, roomType }))}
+                  className="h-7 text-xs"
+                />
               </label>
               <label className="space-y-0.5">
                 <span className="text-[10px] text-muted-foreground">Meal plan</span>
@@ -546,8 +554,8 @@ function LocationCard({
               </label>
               <label className="space-y-0.5">
                 <span className="text-[10px] text-muted-foreground">Currency</span>
-                <select value={newHotel.currency ?? 'USD'} onChange={(e) => setNewHotel((p) => ({ ...p, currency: e.target.value }))} className="h-7 w-full rounded-md border border-input bg-background px-2 text-xs">
-                  {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                <select value={newHotel.currency ?? INTERNAL_CURRENCY} onChange={(e) => setNewHotel((p) => ({ ...p, currency: e.target.value }))} className="h-7 w-full rounded-md border border-input bg-background px-2 text-xs">
+                  {HOTEL_CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </label>
             </div>
@@ -604,7 +612,7 @@ function HotelRow({
         </div>
         {total != null && (
           <span className="shrink-0 text-xs font-semibold text-primary">
-            {hotel.currency ?? 'USD'} {total.toLocaleString()}
+            {hotel.currency ?? INTERNAL_CURRENCY} {total.toLocaleString()}
           </span>
         )}
         <Button variant="ghost" size="icon-sm" onClick={() => setExpanded((v) => !v)} aria-label="Edit">
@@ -665,8 +673,8 @@ function HotelRow({
             </label>
             <label className="space-y-0.5">
               <span className="text-[10px] text-muted-foreground">Currency</span>
-              <select value={hotel.currency ?? 'USD'} onChange={(e) => onUpdate({ currency: e.target.value })} className="h-7 w-full rounded-md border border-input bg-background px-2 text-xs">
-                {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              <select value={hotel.currency ?? INTERNAL_CURRENCY} onChange={(e) => onUpdate({ currency: e.target.value })} className="h-7 w-full rounded-md border border-input bg-background px-2 text-xs">
+                {HOTEL_CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </label>
           </div>
@@ -677,7 +685,7 @@ function HotelRow({
           {/* Auto-price badge */}
           {!hotel.pricePerNight && (
             <p className="text-[10px] text-muted-foreground">
-              * Price auto-estimated at {hotel.currency ?? 'USD'} {ppn}/night - update to set actual rate.
+              * Price auto-estimated at {hotel.currency ?? INTERNAL_CURRENCY} {ppn}/night - update to set actual rate.
             </p>
           )}
         </div>

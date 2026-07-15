@@ -21,6 +21,9 @@ export class ExtractedHotelDto {
   @IsOptional() @IsNumber() nights?: number;
   @IsOptional() @IsNumber() rating?: number;
   @IsOptional() @IsNumber() roomCount?: number;
+  @IsOptional() @IsString() roomType?: string;
+  @IsOptional() @IsNumber() maxOccupancy?: number;
+  @IsOptional() @IsNumber() pricePerNight?: number;
 }
 
 export class ExtractedServiceDto {
@@ -91,6 +94,9 @@ export interface ExtractedHotel {
   nights?: number;
   rating?: number;
   roomCount?: number;
+  roomType?: string;
+  maxOccupancy?: number;
+  pricePerNight?: number;
 }
 
 export interface ExtractedService {

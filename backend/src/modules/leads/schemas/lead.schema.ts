@@ -54,7 +54,28 @@ export class LeadHotelOption {
   @Prop({ trim: true })
   roomType?: string;
 
-  /** Selling price per person for this option, in the lead's currency. */
+  @Prop({ type: String, trim: true, uppercase: true, default: 'AED' })
+  currency?: string;
+
+  /** AED sell rate per room per night. */
+  @Prop({ type: Number, min: 0 })
+  pricePerNight?: number;
+
+  /** Rooms required/quoted after occupancy rules are applied. */
+  @Prop({ type: Number, min: 1 })
+  roomCount?: number;
+
+  /** Max guests allowed in one room before another room is required. */
+  @Prop({ type: Number, min: 1 })
+  maxOccupancy?: number;
+
+  @Prop({ type: Number, min: 1 })
+  nights?: number;
+
+  @Prop({ type: Number, min: 0 })
+  totalPrice?: number;
+
+  /** Selling price per person for this option, in the option/lead currency. */
   @Prop({ type: Number, min: 0 })
   pricePerPerson?: number;
 
@@ -89,7 +110,7 @@ export class LeadServiceItem {
   @Prop({ trim: true })
   supplier?: string;
 
-  @Prop({ type: String, trim: true, uppercase: true, default: 'USD' })
+  @Prop({ type: String, trim: true, uppercase: true, default: 'AED' })
   currency?: string;
 
   @Prop({ type: Number, min: 0 })
@@ -172,7 +193,7 @@ export class LeadHotel {
   @Prop({ type: Number })
   totalPrice?: number;
 
-  @Prop({ trim: true, default: 'USD' })
+  @Prop({ trim: true, default: 'AED' })
   currency?: string;
 
   @Prop({ trim: true })
@@ -387,7 +408,7 @@ export class Lead {
   @Prop({ type: Number, min: 0 })
   markup?: number;
 
-  @Prop({ type: String, default: 'USD', trim: true, uppercase: true })
+  @Prop({ type: String, default: 'AED', trim: true, uppercase: true })
   currency!: string;
 
   /** Hours the quote stays valid — rendered as the ⚠️ validity line. */

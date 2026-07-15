@@ -70,7 +70,7 @@ export class HotelsService {
   private async findAllFromDatabase(
     query: QueryHotelDto,
   ): Promise<PaginatedResponse<HotelResult>> {
-    const filter: FilterQuery<HotelCatalogDocument> = {};
+    const filter: FilterQuery<HotelCatalogDocument> = { isActive: true, isDeleted: false };
     if (query.starRating) filter.starRating = query.starRating;
     if (query.city) filter.city = { $regex: `^${escapeRegExp(query.city)}$`, $options: 'i' };
     if (query.area) filter.area = { $regex: escapeRegExp(query.area), $options: 'i' };

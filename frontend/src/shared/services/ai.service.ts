@@ -80,6 +80,9 @@ export interface ExtractedHotel {
   nights?: number;
   rating?: number;
   roomCount?: number;
+  roomType?: string;
+  maxOccupancy?: number;
+  pricePerNight?: number;
 }
 
 export interface ExtractedService {
