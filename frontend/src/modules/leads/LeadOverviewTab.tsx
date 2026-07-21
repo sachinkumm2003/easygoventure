@@ -773,7 +773,6 @@ const emptyOption: LeadHotelOption = {
 
 function HotelOptionsEditor({
   options,
-  currency,
   pax,
   defaultNights,
   sourceCurrency,
@@ -781,7 +780,7 @@ function HotelOptionsEditor({
   suggestions = [],
 }: {
   options: LeadHotelOption[];
-  currency: string;
+  currency?: string;
   pax: number;
   defaultNights: number;
   sourceCurrency: string;
